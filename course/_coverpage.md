@@ -1,6 +1,6 @@
 # Frida Boot 👢
 
-> A binary instrumentation with [Frida](https://frida.re) workshop, for beginners!
+> A binary instrumentation workshop, using [Frida](https://frida.re/), for beginners!
 
 Built with ♥️ by [@leonjza](https://www.twitter.com/leonjza)
 

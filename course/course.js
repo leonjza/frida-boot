@@ -8,8 +8,8 @@ window.$docsify = {
   coverpage: true,
   onlyCover: false,
   pagination: {
-    previousText: '<-',
-    nextText: '->',
+    previousText: 'Previous',
+    nextText: 'Next',
     crossChapter: true,
     crossChapterText: true,
   },
