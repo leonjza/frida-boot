@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 #ifdef __linux__
     #include <unistd.h>
@@ -18,9 +19,12 @@ int string_to_int(char *s) {
 }
 
 void write_info_string(const char *s) {
-    printf("(tool) %s\n", s);
-}
+    time_t t = time(NULL);
+    char *t_str = ctime(&t);
+    t_str[strlen(t_str) - 1] = '\0';
 
+    printf("(%s) (tool) %s\n", t_str, s);
+}
 
 void wait_for_something_nice(int t) {
 

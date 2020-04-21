@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
     int iterations = string_to_int(argv[1]);
 
     char line[50];
-    sprintf(line, "Running %d iterations", iterations);
+    sprintf(line, "Running for %d iterations", iterations);
     write_info_string(line);
 
     write_info_string("Lets go!");
