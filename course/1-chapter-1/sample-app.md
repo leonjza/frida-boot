@@ -1,6 +1,6 @@
 # The Sample Application
 
-In the [`program/`](https://github.com/leonjza/frida-boot/tree/master/program) folder on your host lives a small, sample application that we will be experimenting with at first. This same folder should be available inside the container in the `/root/code` directory.
+In the [`program/`](https://github.com/leonjza/frida-boot/tree/master/program) folder on your host lives a small, sample application that we will be experimenting with at first. This same folder should be available inside your container in the `/root/code` directory.
 
 ![code](../_media/progam-source.png)
 
@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 }
 ```
 
-A `tools.c` file contains some helper functions that the program uses, such as `random_int()` and `write_info_string()`. The function that is called in each iteratio in the `main()` function is `wait_for_something_nice()` and looks something like this:
+A `tools.c` file contains some helper functions that the program uses, such as `random_int()` and `write_info_string()`. The function that is called in each iteration in the `main()` function is `wait_for_something_nice()` and looks something like this:
 
 ```c
 #include <stdio.h>
@@ -52,3 +52,5 @@ void wait_for_something_nice(int t) {
     // ...
 }
 ```
+
+Simple enough!

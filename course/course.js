@@ -7,6 +7,8 @@ window.$docsify = {
   loadNavbar: true,
   coverpage: true,
   onlyCover: false,
+  maxLevel: 0,
+  subMaxLevel: 5,
   pagination: {
     previousText: 'Previous',
     nextText: 'Next',
@@ -14,8 +16,8 @@ window.$docsify = {
     crossChapterText: true,
   },
   copyCode: {
-    buttonText : 'Copy to clipboard',
-    errorText  : 'Error',
+    buttonText: 'Copy to clipboard',
+    errorText: 'Error',
     successText: 'Copied'
   }
 } 

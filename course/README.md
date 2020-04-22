@@ -1,12 +1,12 @@
 # Frida Boot 👢
 
-Welcome to Frida Boot! A binary instrumentation workshop, using [frida](https://frida.re/), for beginners!
+Welcome to Frida Boot! A binary instrumentation workshop, using [frida](https://frida.re/), for beginners! While the workshop absolutely has a strong security-related flavour, folks new to the idea of binry instrumentation with either a security or development background may find this useful.
 
-I hope that this workshop gets you excited about using Frida, and can accelerate your learning to go from wondering about, to crafting your spoils! "WTF" to "IDKFA".
+I hope that this workshop gets you excited about using Frida, and accelerates your learning to go from wondering about, to crafting your own spoils! "WTF" to "IDKFA".
 
 ## What you will not learn
 
-This workshop will **not** cover the widly popular mobile application uses of Frida. Instead, the idea is to teach the core concepts that can be applied to any runtime (albeit with their naunces) that Frida supports.
+This workshop will **not** cover the widly popular mobile application uses of Frida. Instead, the idea is to teach simple, core concepts that can be applied to any runtime (albeit with their naunces) that Frida supports.
 
 ## Using this documentation
 
