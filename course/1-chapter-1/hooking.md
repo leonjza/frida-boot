@@ -1,4 +1,4 @@
-# Hooking
+# Hooking 101
 
 Hooking function calls in a program provides us with an incredibly powerful ability to see whats happening "under the hood" of a running program. With hooking, we can "spy" on parts of a programs logic, or modify logic so that the program behaves completely differently. We can even reuse parts of the progam against itself :) Let's look at an example.
 

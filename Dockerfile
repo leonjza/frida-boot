@@ -19,6 +19,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     # to debug some stuffzzzz \
     gdb \
     locales \
+    procps \
     # so that frida-trace can populate args \
     man manpages-dev \
     ltrace \
