@@ -10,4 +10,4 @@
   - [Compiling](1-chapter-1/compiling)
   - [Hooking 101](1-chapter-1/hooking)
   - [LD_PRELOAD](1-chapter-1/ld_preload)
-  - [Detours](1-chapter-1/detours)
+  - [Hook Internals](1-chapter-1/internals)

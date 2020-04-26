@@ -39,10 +39,12 @@ Let's see this in action. To play with `LD_PRELOAD`, we will first write a quick
 
 int main() {
 
+    printf("[+] Starting up!\n");
+
     int t = 3;
 
     while(1) {
-        printf("Sleeping for %d seconds\n", t);
+        printf("[+] Sleeping for %d seconds\n", t);
         // 2
     }
 }
@@ -57,14 +59,17 @@ gcc sleep_test.c -o sleep_test
 You should see now new output after hitting enter, but instead should have a new binary in the local directory called `sleep_test`. Running it should just print _Sleeping for 3 seconds_ forver.
 
 ```text
-$ ./sleep_test |head
-Sleeping for 3 seconds
-Sleeping for 3 seconds
-Sleeping for 3 seconds
-Sleeping for 3 seconds
-Sleeping for 3 seconds
-Sleeping for 3 seconds
-Sleeping for 3 seconds
+$ ./sleep_test
+[+] Starting up!
+[+] Sleeping for 3 seconds
+[+] Sleeping for 3 seconds
+[+] Sleeping for 3 seconds
+[+] Sleeping for 3 seconds
+[+] Sleeping for 3 seconds
+[+] Sleeping for 3 seconds
+[+] Sleeping for 3 seconds
+[+] Sleeping for 3 seconds
+[+] Sleeping for 3 seconds
 
 [...]
 ```
@@ -100,10 +105,12 @@ The `SYNOPSIS` sectin tells us exactly which headers to include in our program, 
 
 int main() {
 
+    printf("[+] Starting up!\n");
+
     int t = 3;
 
     while(1) {
-        printf("Sleeping for %d seconds\n", t);
+        printf("[+] Sleeping for %d seconds\n", t);
         sleep(t);
     }
 }
@@ -125,7 +132,7 @@ The man page for `ld.so`, explaining the `LD_PRELOAD` environment variable says 
 unsigned int sleep(unsigned int seconds) {
 
     // you've never slept the well in your life!
-    printf("sleep goes brrr\n");
+    printf("[-] sleep goes brrr\n");
 
     return 0;
 }
@@ -144,15 +151,17 @@ With our shared library implementing `sleep()` ready, its time to hook the real 
 ?> By running `LD_PRELOAD=./lib.so ./program`, we are specifying the `LD_PRELOAD` value for this run only. You can change that to be for any program started in the current shell with `export LD_PRELOAD=./lib.so`. Alternatively, if you have a library you want to be preloaded with any program, you can add a line to `/etc/ld.so.preload` (which can be pretty dangerous!).
 
 ```bash
-$ LD_PRELOAD=./fake_sleep.so ./sleep_test | head
-Sleeping for 3 seconds
-sleep goes brrr
-Sleeping for 3 seconds
-sleep goes brrr
-Sleeping for 3 seconds
-sleep goes brrr
-Sleeping for 3 seconds
-sleep goes brrr
+$ LD_PRELOAD=./fake_sleep.so ./sleep_test
+[+] Starting up!
+[+] Sleeping for 3 seconds
+[-] sleep goes brrr
+[+] Sleeping for 3 seconds
+[-] sleep goes brrr
+[+] Sleeping for 3 seconds
+[-] sleep goes brrr
+[+] Sleeping for 3 seconds
+[-] sleep goes brrr
+[+] Sleeping for 3 seconds
 
 [...]
 ```
@@ -161,7 +170,7 @@ sleep goes brrr
 
 You may not always want to completely replace a function though. Instead, you may want to just add some logging to a function call to sniff arguments for example, just like a detour on your way somewhere nice. In that case, we will need to update the shared library to actually call the _real_ sleep once we are done with what we want to do.
 
-!> This is a bit of a more an advanced topic, but is important to understand.
+!> This is a bit of a more advanced topic. Don't stress if everything isn't perfectly clear.
 
 With our shared library overriding the call to `sleep()`, we need to figure out where the real `sleep()` is if we want to make use of it. One way to do that is call `dlsym` to dynamically try and determine the address of a symbol (in our case the real `sleep()`). With the address, we can proceed to call the original `sleep()` directly, without relying on the linker to resolve it. So how do we call `dlsym()`? `man 3 dlsym`!
 
@@ -192,7 +201,7 @@ One last thing, lets update the sleep to just sleep for `1` second in the librar
 unsigned int sleep(unsigned int seconds) {
 
     // you've never slept the well in your life!
-    printf("sleep goes brrr\n");
+    printf("[-] sleep goes brrr\n");
 
     seconds = 1;
 
@@ -206,17 +215,20 @@ unsigned int sleep(unsigned int seconds) {
 We are almost there! The last step would be to recompile our shared library, but because we are going to lookup symbols at runtime, we should also link a dynamic linker, `libdl`. It's a mouthful I know, but all that means is you need to add the `-ldl` flag at the end of your `gcc` command. For example:
 
 ```bash
-$ gcc -fPIC -shared fake_sleep.c -o fake_sleep.so -ldl
+gcc -fPIC -shared fake_sleep.c -o fake_sleep.so -ldl
 ```
 
 Thats it! Run the program again with the `LD_PRELOAD` environment variable set and watch as the three second sleep becomes only one second, with a nice message.
 
 ```bash
 $ LD_PRELOAD=./fake_sleep.so ./sleep_test
-Sleeping for 3 seconds
-sleep goes brrr
+[+] Starting up!
+[+] Sleeping for 3 seconds
+[-] sleep goes brrr
+[+] Sleeping for 3 seconds
+[-] sleep goes brrr
 
-[ sleep for 1 second ]
+[ ... actually sleeps for 1 second ... ]
 ```
 
 Neat! You have just build a shared library that creates a detour for the `sleep()` function, logging when its invoked and altering the time to sleep to `1` second. All without touching the source code of the original program.
