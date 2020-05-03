@@ -16,4 +16,6 @@
   - [Frida](2-chapter-2/frida)
   - [JavaScript API](2-chapter-2/javascript)
   - [Sleep Hook v2](2-chapter-2/sleep)
-  - [Hook Arguments](2-chapter-2/arguments)
+  - [Interceptor Arguments](2-chapter-2/arguments)
+  - [Interceptor Return Values](2-chapter-2/return)
+  - [Repurposing Code](2-chapter-2/repurposing)

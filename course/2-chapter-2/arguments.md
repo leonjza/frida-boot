@@ -1,4 +1,4 @@
-# frida hook arguments
+# interceptor arguments
 
 So far we have written a simple function hook that allows us to spy on calls to `sleep()`. According to `man 3 sleep`, `sleep()` takes one integer argument signalling for how long the should sleep occur. In the `LD_PRELOAD` example we modified that sleep duration, so lets replicate that with Frida.
 
@@ -32,6 +32,8 @@ Interceptor.attach(sleep, {
 
 Modifying argument values is just as simple as printing them! All you need to do is assign them. Given that we are working with the first argument, let's update the sleep to only one second. We can do that by saying `args[0] = ptr("0x1")`. That's really it.
 
+With `Interceptor.attach()`, the code in our `onEnter` callback is called _before_ the real function is called. This is why we can modify the argument's to affect how the real target function behaves.
+
 ```javascript
 var sleep = Module.getExportByName(null, "sleep");
 
@@ -46,3 +48,25 @@ Interceptor.attach(sleep, {
     }
 });
 ```
+
+This way you should see that the program no longer sleeps for random intervals, but rather just for one second. 🎉
+
+## overriding string arguments
+
+Just like how we have made changes to `sleep()` by modifying its arguments, we can do the same to `printf`. One argument gets passed to `printf()` which is the string to print. However, under the hood this is actually a pointer to a character array. If we wanted to override what we see in `pew`, we would hook `printf()` like this:
+
+```javascript
+var printf = Module.getExportByName(null, "printf");
+
+// Allocate a new memory region, returning the pointer to the string.
+var buf = Memory.allocUtf8String("Frida sleep! :D\n");
+
+Interceptor.attach(printf, {
+    onEnter: function(args) {
+    console.log("printf(\"" + args[0].readCString().trim() + "\")");
+    args[0] = buf;  // update the argument to printf
+    }
+});
+```
+
+Excellent! Let's move on.
