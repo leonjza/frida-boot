@@ -7,7 +7,7 @@ The following core tooling should be available:
 - GNU Debugger [`gdb`](https://www.gnu.org/software/gdb/) with the awesome GDB Enhanced Features [`gef`](http://gef.rtfd.io/) assitance tooling.
 - The [Frida](https://frida.re/) python command line utilities, [`frida-tools`](https://github.com/frida/frida-tools) which also includes [`frida`](https://github.com/frida/frida) itself.
 
-Other helpers include:
+Other programs / helpers include:
 
 - `vim`, I mean, what else.
 - `tmux`, we are going to do a few things at once. You can always just spawn more shells from your host into the container.

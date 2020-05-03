@@ -14,19 +14,13 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     # course documentation \
     nginx-light \
     # frida and compiler stuff \
-    python3-pip \
-    build-essential \
-    # to debug some stuffzzzz \
-    gdb \
-    locales \
-    procps \
-    file \
+    python3-pip build-essential \
+    # to debug stuff \
+    gdb locales procps file ltrace \
     # so that frida-trace can populate args \
     man manpages-dev \
-    ltrace \
-    vim \
-    tmux \
-    curl \
+    # utils
+    vim tmux curl \
   && rm -rf /var/lib/apt/lists/*
 
 # Configure the locale for UTF8 support.
@@ -46,6 +40,9 @@ RUN curl -fsSL https://github.com/hugsy/gef/raw/master/gef.py -o ~/.gdbinit-gef.
 # Configure the documentation
 RUN rm -Rf /var/www/html
 ADD course/ /var/www/html
+
+# Add code snippets
+ADD software /root/software
 
 # Defaults
 VOLUME /root/code

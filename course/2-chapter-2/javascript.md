@@ -17,7 +17,7 @@ The Frida REPL can autocomplete most of the Frida modules as well. This makes pr
 ?> Try and hit `TAB` as often as you can, there are plenty of places where it works!
 
 ```text
-[Local::sleep_test]-> Process.id;
+[Local::pew]-> Process.id;
 31
 ```
 
@@ -29,7 +29,7 @@ The Frida REPL can autocomplete most of the Frida modules as well. This makes pr
     "path": "/lib/x86_64-linux-gnu/libc-2.30.so",
     "size": 1830912
 }
-[Local::sleep_test]->
+[Local::pew]->
 ```
 
 All of this is happening while the target process, `sleep_test` is still running...

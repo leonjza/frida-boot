@@ -2,7 +2,7 @@
 
 Hooking function calls in a program provides us with an incredibly powerful ability to see whats happening "under the hood" of a running program. With hooking, we can "spy" on parts of a programs logic, or modify logic so that the program behaves completely differently. We can even reuse parts of the progam against itself :) Let's look at an example.
 
-Imagine some C functions for a moment that is responsible crypto related work. Ignoring the actual crypto implementation for a moment, they may look like this:
+Imagine some C functions for a moment that is responsible crypto related work. Ignoring the actual crypto implementation, they may look something like this:
 
 ```c
 // Encrypt a buffer using key
@@ -16,7 +16,7 @@ char * getKey() {
 }
 ```
 
-When the program makes a call to `encrypt()`, at runtime the `key` will be passed to it as an argument. Using hooking the idea would be to reveal that key as the function is invoked. Practically depending on how the hooking is performed, one may simply echo the `key` value to screen and allow the function to continue normally.
+When a program makes a call to `encrypt()`, `key` will be passed to it as an argument. Using hooking the idea would be to reveal what the value of `key` is as the function is called. Practically depending on how the hooking is performed, one may simply echo the `key` value to screen and allow the function to continue normally.
 
 Considering the `getKey()` function for a moment, hooking to reveal arguments may be less interesting, whereas the `return` value is. When hooking we can possibly reveal the key when the function returns, or, we can provide our own key value instead.
 

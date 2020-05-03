@@ -73,10 +73,10 @@ At this stage you have two options to launch Frida. You can either use Frida to 
 
 ### frida spawn
 
-To spawn and attach, simply run `frida ./sleep_test` as an example:
+To spawn and attach, simply run `frida ./pew` as an example:
 
 ```text
-$ frida ./sleep_test
+~/code$ frida ./pew
      ____
     / _  |   Frida 12.8.20 - A world-class dynamic instrumentation toolkit
    | (_| |
@@ -86,15 +86,15 @@ $ frida ./sleep_test
    . . . .       exit/quit -> Exit
    . . . .
    . . . .   More info at https://www.frida.re/docs/home/
-Spawned `./sleep_test`. Use %resume to let the main thread start executing!
-[Local::sleep_test]->
+Spawned `./pew`. Use %resume to let the main thread start executing!
+[Local::pew]->
 ```
 
-Thats it! `sleep_test` spawned, paused and now has Frida connected to it. Behind the scenes you just injected a JavaScript engine into the procress too. l33t! 🎉 To resume `sleep_test` to continue normal operations, just type `%resume` and hit `enter`. You should notice the sweet auto suggestions and tab completion there is too.
+Thats it! `pew` spawned, paused and now has Frida connected to it. Behind the scenes you just injected a JavaScript engine into the procress too. l33t! 🎉 To resume `pew` to continue normal operations, just type `%resume` and hit `enter`. You should notice the sweet auto suggestions and tab completion there is too.
 
-Normally the `frida` REPL can be used to quickly prototype small scripts and test things out. For example, in the REPL you can type something like `console.log("poo");`, and the after pressting `enter`, that will get sent to the Frida agent running inside of the process and evaluated. Standard out should be sent back too, resulting in the word `poo` displaying in your shell.
+Normally the `frida` REPL can be used to quickly prototype small scripts and test things out. For example, in the REPL you can excute any valid JavaScript such as `console.log("poo");`, and the after pressting `enter`, that will get sent to the Frida agent running inside of the process and evaluated. Standard out should be sent back too, resulting in the word `poo` displaying in your shell.
 
-To quit the REPL, simply hit `ctrl + d`. You may notive that `sleep_test` is still running after you quit, and this is because quitting Frida simply means it detaches from the target process, not killing it. You should be able to see `sleep_test` still running in the process list, and you can safely kill it with `kill -9 $(pidof sleep_test)`.
+To quit the REPL, simply hit `ctrl + d`. You may notice that `pew` is still running after you quit, and this is because quitting Frida simply means it detaches from the target process, not killing it. You should be able to see `pew` still running in the process list, and you can safely kill it with `kill -9 $(pidof pew)`.
 
 ### frida attach
 
@@ -102,19 +102,20 @@ Attaching to a running process is just as easy. For this you are going to need t
 
 ?> Refer to the [getting shells](0-getting-started/shells) section if you are unsure how to get another shell in the Docker environment.
 
-Run the `sleep_test` program in one shell so that it sleeps, printing its status along the way.
+Run the `pew` program in one shell so that it sleeps, printing its status along the way.
 
 ```bash
-$ ./sleep_test
+$ ./pew
 [+] Starting up!
-[+] Sleeping for 3 seconds
-[+] Sleeping for 3 seconds
+[+] Sleeping for 2 seconds
+[+] Sleeping for 4 seconds
+[+] Sleeping for 1 seconds
 ```
 
-In a new shell, attach Frida to the process with `frida sleep_test`. Note that we use the process name here, not the full path to the process signalled with a `./` in front of `sleep_test`.
+In a new shell, attach Frida to the process with `frida pew`. Note that we use the process name here, not the full path to the process signalled with a `./` in front of `pew`.
 
 ```text
-$ frida sleep_test
+$ frida pew
      ____
     / _  |   Frida 12.8.20 - A world-class dynamic instrumentation toolkit
    | (_| |
@@ -125,7 +126,7 @@ $ frida sleep_test
    . . . .
    . . . .   More info at https://www.frida.re/docs/home/
 
-[Local::sleep_test]->
+[Local::pew]->
 ```
 
 This time round the process is not paused, but instead allowed to continue as normal with Frida attached. We are now ready to start instrumentation!

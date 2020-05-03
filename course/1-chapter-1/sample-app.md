@@ -1,56 +1,31 @@
 # The Sample Application
 
-In the [`program/`](https://github.com/leonjza/frida-boot/tree/master/program) folder on your host lives a small, sample application that we will be experimenting with at first. This same folder should be available inside your container in the `/root/code` directory.
+All of the programs in their final state can be found in the [`software/`](https://github.com/leonjza/frida-boot/tree/master/software) folder. If ever you need to quickly refer to a snippet of code for any reason, this would be a good place to look.
 
-![code](../_media/progam-source.png)
-
-?> Take a moment to explore the source files a bit.
-
-## Program structure
-
-The sample program is atually really simple. The `main()` function takes a single argument and effectively loops for a random amount of seconds, for the number of iterations specified and prints a status line.
-
-A simplified version of the `main()` function can be seen here.
+The main program we will be using will be referred to as `pew`, with its source code available in the `software/` folder as well as in the snippet below. Copy the source code and save it in a file called `pew.c`
 
 ```c
 #include <stdio.h>
-#include "tools.h"
-
-int main(int argc, char **argv) {
-
-    // ...
-
-    while(iterations != 0) {
-        wait_for_something_nice(1);
-        iterations--;
-    }
-
-    // ...
-
-    return 0;
-}
-```
-
-A `tools.c` file contains some helper functions that the program uses, such as `random_int()` and `write_info_string()`. The function that is called in each iteration in the `main()` function is `wait_for_something_nice()` and looks something like this:
-
-```c
-#include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <time.h>
-#include <string.h>
 
-// ...
+int rand_range(int min, int max) {
+    return min + rand() % (max+1 - min);
+}
 
-void wait_for_something_nice(int t) {
+int main() {
 
-    t = t * random_int(1, 5);
+    printf("[+] Starting up!\n");
 
-    // ...
+    int d;
+    srand(time(NULL));
 
-    sleep(t);
+    while(1) {
+        d = rand_range(1, 5);
 
-    // ...
+        printf("[+] Sleeping for %d seconds\n", d);
+        sleep(d);
+    }
 }
 ```
-
-Simple enough!

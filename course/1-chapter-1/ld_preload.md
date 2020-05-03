@@ -15,15 +15,15 @@ Under the hood, when a call to something like `printf` is made for the first tim
 
 ```bash
 # Dynamic executable
-$ gcc example.c -o example
-$ ldd example
-    linux-vdso.so.1 (0x00007ffe411c3000)
-    libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f4990592000)
-    /lib64/ld-linux-x86-64.so.2 (0x00007f4990760000)
+$ gcc *.c -o pew
+$ ldd pew
+    linux-vdso.so.1 (0x00007fff904a2000)
+    libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fd35b18e000)
+    /lib64/ld-linux-x86-64.so.2 (0x00007fd35b35c000)
 
 # Static executable
-$ gcc -static example.c -o example # note the -static flag
-$ ldd example
+$ gcc *.c -static -o pew # note the -static flag
+$ ldd pew
     not a dynamic executable
 ```
 
@@ -31,54 +31,28 @@ When a dynamic executable encouters a function like `printf` for the first time,
 
 ## Excercise
 
-Let's see this in action. To play with `LD_PRELOAD`, we will first write a quick example program. The following snippet can be copied into a new file, calling it `sleep_test.c`:
+Let's see this in action. Our `pew` program already makes use of functions from the libc shared library. Those functions are ones like `printf` and `sleep`.
 
 ```c
-#include <stdio.h>
-// 1
-
 int main() {
 
     printf("[+] Starting up!\n");
 
-    int t = 3;
-
+    // ... snip
     while(1) {
-        printf("[+] Sleeping for %d seconds\n", t);
-        // 2
+        d = rand_range(1, 5);
+
+        printf("[+] Sleeping for %d seconds\n", d);
+        sleep(d);
     }
 }
 ```
 
-If you were to compile that program now, you should just have an infinite loop that does not sleep. Regardless, lets compile it just to check that everything works. Run:
+Compiling and running the `pew` program now means an infinite loop would be started, sleeping for a random number of seconds between `1` and `5`.
 
-```bash
-gcc sleep_test.c -o sleep_test
-```
+## sleeps arguments
 
-You should see now new output after hitting enter, but instead should have a new binary in the local directory called `sleep_test`. Running it should just print _Sleeping for 3 seconds_ forver.
-
-```text
-$ ./sleep_test
-[+] Starting up!
-[+] Sleeping for 3 seconds
-[+] Sleeping for 3 seconds
-[+] Sleeping for 3 seconds
-[+] Sleeping for 3 seconds
-[+] Sleeping for 3 seconds
-[+] Sleeping for 3 seconds
-[+] Sleeping for 3 seconds
-[+] Sleeping for 3 seconds
-[+] Sleeping for 3 seconds
-
-[...]
-```
-
-Kill the program with `ctrl + c`.
-
-## Actually sleeping
-
-Let's introduce the sleep. To know which headers we may need, as well as which arguments `sleep()` would need (if any), we can refer to the man pages again. Check out the `sleep()` man page with `man 3 sleep`.
+If you were to write `pew.c` yourself, at some stage you may wonder which headers to use, and which arguments a function like sleep uses. For this information you can have a look at section 3 of the target functions manual page. i.e. `man 3 sleep`.
 
 ```text
 SLEEP(3)    Linux Programmer's Manual   SLEEP(3)
@@ -97,32 +71,15 @@ DESCRIPTION
 
 ?> The `3` refers to the manual page section we want. Section 3 is typically for library functions from the C standard library.
 
-The `SYNOPSIS` sectin tells us exactly which headers to include in our program, and what the function signature for `sleep()` is. Add this to your program now.
+The `SYNOPSIS` sectin tells us exactly which headers to include in our program, and what the function signature for `sleep()` is.
 
-```c
-#include <stdio.h>
-#include <unistd.h>
-
-int main() {
-
-    printf("[+] Starting up!\n");
-
-    int t = 3;
-
-    while(1) {
-        printf("[+] Sleeping for %d seconds\n", t);
-        sleep(t);
-    }
-}
-```
-
-Next, recompile your program by running the `gcc` command again. It should _actually_ sleep for the `3` seconds we hard coded the time. But what if we wanted to change that 3 seconds? Well, our one option is to change the source code and make it whatever the new value should be. Then, recompile and test. Or, we can use a shared library with `LD_PRELOAD`.
+But what if we wanted to override the number of seconds we sleep for? Well, our one option is to change the source code and make it whatever the new value should be. Then, recompile and test. Or, we can use a shared library with `LD_PRELOAD`.
 
 Here comes the fun part! 🎉
 
 ## Shared libraries
 
-The man page for `ld.so`, explaining the `LD_PRELOAD` environment variable says we need to use a shared library for this, so lets build one ouselves. Using the man page in the previous section as reference, we need to implement _exactly_ the same function signature in our library. So, create a new file called `fake_sleep.c` and implement the new and improved `sleep()` function. For now, we will just print a string indicating that out sleep was called! (_Hint:_ Get the function signature/heads from `man 3 printf`).
+The man page for `ld.so`, explaining the `LD_PRELOAD` environment variable says we need to use a shared library for this, so lets build one ouselves. Using the man page in the previous section as reference, we need to implement _exactly_ the same function signature in our library. So, create a new file called `fake_sleep.c` and implement the new and improved `sleep()` function. For now, we will just print a string indicating that our sleep was called and not the one from libc! (_Hint:_ Get the function signature/heads from `man 3 printf`).
 
 ```c
 #include <stdio.h>
@@ -133,10 +90,11 @@ unsigned int sleep(unsigned int seconds) {
 
     // you've never slept the well in your life!
     printf("[-] sleep goes brrr\n");
-
     return 0;
 }
 ```
+
+This shared library will effectively replace what `sleep()` is supposed to do and actually not sleep at all!
 
 Compiling a shared library is a _little_ different to a normal program. This time round we need to give `gcc` some new flags indicating that we want Position Independant Code (PIC) and more specifically a `shared` library. With that in mind we can compile the shared library with:
 
@@ -146,22 +104,22 @@ gcc -fPIC -shared fake_sleep.c -o fake_sleep.so
 
 ?> *Note* The output file name ends with an `.so`. `LD_PRELOAD` will ignore files that do not end with that extention.
 
-With our shared library implementing `sleep()` ready, its time to hook the real `sleep()`! Do that with `LD_PRELOAD=./fake_sleep.so ./sleep_test`.
+With our shared library implementing `sleep()` ready, its time to hook the real `sleep()`! Do that now with `LD_PRELOAD=./fake_sleep.so ./pew`.
 
 ?> By running `LD_PRELOAD=./lib.so ./program`, we are specifying the `LD_PRELOAD` value for this run only. You can change that to be for any program started in the current shell with `export LD_PRELOAD=./lib.so`. Alternatively, if you have a library you want to be preloaded with any program, you can add a line to `/etc/ld.so.preload` (which can be pretty dangerous!).
 
-```bash
-$ LD_PRELOAD=./fake_sleep.so ./sleep_test
+```text
+$ LD_PRELOAD=./fake_sleep.so ./pew
 [+] Starting up!
 [+] Sleeping for 3 seconds
 [-] sleep goes brrr
-[+] Sleeping for 3 seconds
+[+] Sleeping for 2 seconds
 [-] sleep goes brrr
-[+] Sleeping for 3 seconds
+[+] Sleeping for 2 seconds
 [-] sleep goes brrr
-[+] Sleeping for 3 seconds
+[+] Sleeping for 2 seconds
 [-] sleep goes brrr
-[+] Sleeping for 3 seconds
+[+] Sleeping for 2 seconds
 
 [...]
 ```

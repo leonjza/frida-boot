@@ -1,36 +1,25 @@
 # Compiling the application
 
-Having familirised ourselves with the source code a little, we can go ahead and compile the application in the container. Performing runtime instrumentation means we need to have a program that will run to instrument.
+Having familirised ourselves with our sample application a little, we can go ahead and compile it in the container.
 
 ## Performing the compile
 
-Inside of the docker container in the `/root/code` repository, compile the test program. A `Makefile` is provided that contains a default target to perform the compilation using `gcc`. Simple run `make` to compile the program.
+Inside of the docker container in the `/root/code` directory you should have the new `pew.c` file from the previous section. Let's compile the program using `gcc`. We will tell `gcc` we want to compile the `pew.c` source file and output the result to a program called `pew`. Do this by running `gcc pew.c -o pew`:
 
 ```bash
-~/code$ make
-gcc *.c -o program
+~/code$ gcc pew.c -o pew
+~/code$
 ```
 
-Of course, you could also manually invoke `gcc` if you wish, specifying any flags you want.
-
-?> Take a look at the `Makefile` sources for other targets. For example, `make clean` will remove the compiled program.
-
-![compile](../_media/program-compile.png)
-
-Once the compilation is done, you should have a new ELF binary called `program` in the same folder. You can run it with `./program` now.
+Once the compilation is done, you should have a new ELF binary called `pew` in the same folder. You can run it with `./pew` now.
 
 ```bash
-~/code$ ./program
-(Wed Apr 22 19:02:31 2020) (tool) Please provide an iteration count
+~/code$ ./pew
+[+] Starting up!
+[+] Sleeping for 3 seconds
+[+] Sleeping for 4 seconds
+[+] Sleeping for 2 seconds
+^C
 ```
 
-The program should complain that it wants an interation could, so to give it that run it again but this time with an argument like 10.
-
-```bash
-~/code$ ./program 10
-(Wed Apr 22 19:03:22 2020) (tool) Running for 10 iterations
-(Wed Apr 22 19:03:22 2020) (tool) Lets go!
-(Wed Apr 22 19:03:22 2020) (tool) Waiting for: 5
-```
-
-If you want to exit the program before the interations complete, simply hit <kbd>&#8963;</kbd> + <kbd>c</kbd>.
+If you want to exit the program before the interations complete, simply hit <kbd>ctrl</kbd> + <kbd>c</kbd>.

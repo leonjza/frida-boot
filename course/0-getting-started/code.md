@@ -1,6 +1,6 @@
 # Workshop Code
 
-Throughout this workshop we will be writing some code (or modifying snippets I provide) for various reasons. All of the code you write needs to eventually run in the container. Depending on your preference, there are a few options to help you with the development workflow.
+In this workshop you are going to be a polyglot programmer. That means, you will be writing code (or modifying snippets) in a wide variety in programming langauges (sometimes more than one language in a file). Embrace it, it really is a lot of fun! All of the code you write needs to eventually run in the container. Depending on your preference, there are a few options to help you with the development workflow.
 
 ## Code inside the container
 
@@ -13,7 +13,7 @@ The recommended approach would be to have a folder outside of the container, mou
 To do this, start the docker container with the `-v` flag, specifying the local path to the code to be available at `/root/code` inside of the container. For example:
 
 ```bash
-docker run --rm -it -p9999:80 -v $(pwd)/program:/root/code
+docker run --rm -it -p9999:80 -v $(pwd)/code:/root/code
 ```
 
 ?> The `$(pwd)` section will automatically expand to the current working directory as the `-v` flag expects a full path.

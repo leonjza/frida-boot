@@ -6,13 +6,13 @@ We are going to concentrate on the JavaScript component for this. We will write 
 
 ## setup
 
-For this to work (and to demonstrate) we need three things. The target program, `sleep_test` in our case, to run. An empty JavaScript file, lets call it `index.js` and finally the `frida` tool booted to inject into `sleep_test`, loading the (empty for now) `index.js`. So:
+For this to work (and to demonstrate) we need three things. The target program, `pew` in our case, to run. An empty JavaScript file, lets call it `index.js` and finally the `frida` tool booted to inject into `pew`, loading the (empty for now) `index.js`. So:
 
-- Run `sleep_test` in a shell.
+- Run `pew` in a shell.
 - Run `touch index.js` in another shell.
-- Run `frida sleep_test -l index.js` in a third shell.
+- Run `frida pew -l index.js` in a third shell.
 
-With those three steps done, you want to leave the target program `sleep_test` and the `frida` tool running. All we need to do now is edit the `index.js` file.
+With those three steps done, you want to leave the target program `pew` and the `frida` tool running. All we need to do now is edit the `index.js` file.
 
 I use `tmux`, so my environment at this stage would have 3 panes open at the moment.
 
@@ -50,37 +50,36 @@ Before we can go ahead and implement our script, the first piece to solve here i
 
 Frida has a wide range of helper functions available to resolve symbols such as `sleep`. Before we dive into those, let's take a look at how we could manually determine the location for it.
 
-The `nm` tool can be used to show the contents of symbol tables in binaries. Running it against the `sleep_test` binary should look something like this:
+The `nm` tool can be used to show the contents of symbol tables in binaries. Running it against the `pew` binary should look something like this:
 
 ```text
-$ nm sleep_test
+$ nm pew
 0000000000004040 B __bss_start
 0000000000004040 b completed.7452
 
 [ ... ]
 
-00000000000011a0 T __libc_csu_init
-                 U __libc_start_main@@GLIBC_2.2.5
-0000000000001155 T main
-                 U printf@@GLIBC_2.2.5
-                 U puts@@GLIBC_2.2.5
-00000000000010d0 t register_tm_clones
+0000000000001185 T rand_range
+0000000000001100 t register_tm_clones
                  U sleep@@GLIBC_2.2.5
-[ ... ]
+                 U srand@@GLIBC_2.2.5
+00000000000010a0 T _start
+                 U time@@GLIBC_2.2.5
+0000000000004058 D __TMC_END__
 ```
 
-?> You can also use `readelf -Ws sleep_test` to display similar output, sometimes more readable than `nm`.
+?> You can also use `readelf -Ws pew` to display similar output, sometimes more readable than `nm`.
 
-The output shows us that `sleep@@GLIB_C` has the `U` (undefined) flag, which should be resolved at runtime using the linker (making things like the `LD_PRELOAD` hack possile). The `G_LIBC` is a hint as to which library should have it. Alright, let's take a look at the shared libraries our binary depends on. This can be done with the `ldd` tool:
+The output shows us that `sleep@@GLIBC_2.2.5` has the `U` (undefined) flag, which should be resolved at runtime using the linker (making things like the `LD_PRELOAD` hack possile). The `G_LIBC` is a hint as to which library should have it. Alright, let's take a look at the shared libraries our binary depends on. This can be done with the `ldd` tool:
 
 ```text
-$ ldd sleep_test
-        linux-vdso.so.1 (0x00007ffd0feda000)
-        libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f97e7599000)
-        /lib64/ld-linux-x86-64.so.2 (0x00007f97e7767000)
+$ ldd pew
+        linux-vdso.so.1 (0x00007ffffddf9000)
+        libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f9de7cb9000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f9de7e87000)
 ```
 
-?> Try running `ldd sleep_test` a few times. You should see the base address for the library change on every run. This is as a result of ASLR.
+?> Try running `ldd pew` a few times. You should see the base address for the library changes on every run. This is as a result of ASLR.
 
 We know that the `sleep()` function we are targetting here is part of libc, so let's run `nm -D` on `libc.so.6`. The output will be very large (more than 2000 symbols), so lets filter for `sleep()` as well:
 
@@ -98,7 +97,7 @@ $ nm -D /lib/x86_64-linux-gnu/libc-2.30.so | grep sleep
 
 ?> We add the `-D` flag to check the dynamic symbols that will be available at runtime when using `libc`. By default, `nm` will read the `.symtab` section, which is usually stripped.
 
-Neat, a weak symbol (`W` flag) to `sleep` at `0xcad60`. Unfortuantely that is not the value we will use for `s` when invoking `new NativePointer()` as the value is the relative address to the code in libc. Thanks to ASLR, this will be different everytime the program runs. Don't worry about it though, we can resolve these at runtime.
+Neat, a weak symbol (`W` flag) to `sleep` at `0xcad60`. Unfortunately that is not the value we will use for `s` when invoking `new NativePointer()` as the value is the relative address to the code in libc. Thanks to ASLR, this will be different everytime our program runs. Don't worry about it though, we can resolve these at runtime.
 
 Let's verify that we got the address of `0xcad60` right using `gdb` quickly:
 
@@ -113,7 +112,7 @@ Symbol "sleep" is at 0xcad60 in a file compiled without debugging.
 
 In `gdb` we have the same addres for `sleep`. Neat! Now again, ASLR will make this address change everytime a binary is run, so let's see if using `0xcad60` as an offset for the function from libc's base address will get us at the same location.
 
-To do this start `gdb` on the `sleep_test` binary again and set a breakpoint on the `main` function with `b *main`. Next, run the binary with `r` and the program should pause after hitting the breakpoint. At this point the shared libraries should all have been loaded. Next, have a look at the processes memory map with `info proc map` (or `vmmap`):
+To do this start `gdb` on the `wpewleep_test` binary again and set a breakpoint on the `main` function with `b *main`. Next, run the binary with `r` and the program should pause after hitting the breakpoint. At this point the shared libraries should all have been loaded. Next, have a look at the processes memory map with `info proc map` (or `vmmap`):
 
 ```text
 gef➤  info proc map
@@ -121,23 +120,23 @@ process 610
 Mapped address spaces:
 
           Start Addr           End Addr       Size     Offset objfile
-      0x564e21bf2000     0x564e21bf3000     0x1000        0x0 /root/sleep_test
-      0x564e21bf3000     0x564e21bf4000     0x1000     0x1000 /root/sleep_test
-      0x564e21bf4000     0x564e21bf5000     0x1000     0x2000 /root/sleep_test
-      0x564e21bf5000     0x564e21bf6000     0x1000     0x2000 /root/sleep_test
-      0x564e21bf6000     0x564e21bf7000     0x1000     0x3000 /root/sleep_test
-      0x7f69c4958000     0x7f69c497d000    0x25000        0x0 /lib/x86_64-linux-gnu/libc-2.30.so
-      0x7f69c497d000     0x7f69c4ac7000   0x14a000    0x25000 /lib/x86_64-linux-gnu/libc-2.30.so
+      0x556e7ef63000     0x556e7ef64000     0x1000        0x0 /root/code/pew
+      0x556e7ef64000     0x556e7ef65000     0x1000     0x1000 /root/code/pew
+      0x556e7ef65000     0x556e7ef66000     0x1000     0x2000 /root/code/pew
+      0x556e7ef66000     0x556e7ef67000     0x1000     0x2000 /root/code/pew
+      0x556e7ef67000     0x556e7ef68000     0x1000     0x3000 /root/code/pew
+      0x7ff47c343000     0x7ff47c368000    0x25000        0x0 /lib/x86_64-linux-gnu/libc-2.30.so
+      0x7ff47c368000     0x7ff47c4b2000   0x14a000    0x25000 /lib/x86_64-linux-gnu/libc-2.30.so
 
 [ ... ]
 ```
 
 ?> You can see the same information for a process outside of `gdb` with `cat /proc/<pid>/maps`.
 
-We can see libc's start address is `0x7f69c4958000` with a zero offset. So, lets see what is at `0x7f69c4958000` + `0xcad60`:
+We can see libc's start address is `0x7ff47c343000` with a zero offset. So, lets see what is at `0x7ff47c343000` + `0xcad60`:
 
 ```text
-gef➤  info symbol 0x7f69c4958000+0xcad60
+gef➤  info symbol 0x7ff47c343000+0xcad60
 sleep in section .text of /lib/x86_64-linux-gnu/libc.so.6
 ```
 
@@ -147,29 +146,29 @@ Much like `gdb` is able to quickly resolve symbols to addresses, Frida can do th
 
 Let's play with some of the Frida API's available to us to resolve addresses. Much like with `ldd` we can see which modules a program depends on, we can use the `Process.enumerateModulesSync()` function to get information about the modules loaded in the current process.
 
-Try that now in your Frida REPL, attached to `sleep_test`.
+Try that now in your Frida REPL, attached to `pew`.
 
 ```text
-[Local::sleep_test]-> Process.enumerateModulesSync();
+[Local::pew]-> Process.enumerateModulesSync();
 [
     {
-        "base": "0x55d4c44d1000",
-        "name": "sleep_test",
-        "path": "/root/sleep_test",
+        "base": "0x55d855fa9000",
+        "name": "pew",
+        "path": "/root/code/pew",
         "size": 20480
     },
     {
-        "base": "0x7fff98db2000",
+        "base": "0x7ffe7f930000",
         "name": "linux-vdso.so.1",
         "path": "linux-vdso.so.1",
         "size": 8192
     },
     {
-        "base": "0x7f9a3e5bf000",
+        "base": "0x7fa233651000",
         "name": "libc-2.30.so",
         "path": "/lib/x86_64-linux-gnu/libc-2.30.so",
         "size": 1830912
-    }
+    },
 
     [ ... ]
 ]
@@ -182,9 +181,9 @@ The `enumerateModulesSync()` gave us an array of modules available in the target
 Try getting libc now.
 
 ```text
-[Local::sleep_test]-> Process.getModuleByName("libc-2.30.so");
+[Local::pew]-> Process.getModuleByName("libc-2.30.so");
 {
-    "base": "0x7f9a3e5bf000",
+    "base": "0x7fa233651000",
     "name": "libc-2.30.so",
     "path": "/lib/x86_64-linux-gnu/libc-2.30.so",
     "size": 1830912
@@ -205,7 +204,7 @@ console.log(exports);   // print results
 In our case, we are just going to do it in one line by calling `enumerateExports()` after we called `getModuleByName()`. Do that now.
 
 ```text
-[Local::sleep_test]-> Process.getModuleByName("libc-2.30.so").enumerateExports();
+[Local::pew]-> Process.getModuleByName("libc-2.30.so").enumerateExports();
 [
     [ ... ]
 
@@ -227,7 +226,7 @@ In our case, we are just going to do it in one line by calling `enumerateExports
 The return fo that should be a pretty large list! Thankfully we could use JavaScript to filter the results down using the `filter()` function on the array that `enumerateExports()` returns.
 
 ```text
-[Local::sleep_test]-> Process.getModuleByName("libc-2.30.so").enumerateExports().filter(function(n) { return n.name == "sleep"; } );
+[Local::pew]-> Process.getModuleByName("libc-2.30.so").enumerateExports().filter(function(n) { return n.name == "sleep"; } );
 [
     {
         "address": "0x7f9a3e689d60",
@@ -261,13 +260,12 @@ Let's use the simplified API now to resolve the address of `sleep()` at runtime.
 
 ```javascript
 // Passing null for the module
-[Local::sleep_test]-> Module.getExportByName(null, "sleep");
+[Local::pew]-> Module.getExportByName(null, "sleep");
 "0x7f9a3e689d60"
 
 // Explicitly specifying the module name
-[Local::sleep_test]-> Module.getExportByName("libc-2.30.so", "sleep");
+[Local::pew]-> Module.getExportByName("libc-2.30.so", "sleep");
 "0x7f9a3e689d60"
-[Local::sleep_test]->
 ```
 
 A little simpler than the previous run, and gets us that address we need! 🎉
@@ -294,7 +292,7 @@ Interceptor.attach(sleep, {
 With that saved to the `index.js` file, loaded with the Frida command line tool, you should start seeing output as follows in the REPL:
 
 ```text
-[Local::sleep_test]-> [*] Sleep from Frida!
+[Local::pew]-> [*] Sleep from Frida!
 [*] Done sleeping from Frida!
 [*] Sleep from Frida!
 [*] Done sleeping from Frida!
@@ -304,7 +302,9 @@ Woa, you just instrumented your first application using Frida! Pretty easy huh?
 
 ## attach under the hood
 
-If we were to check what the `sleep()` function looked like before and after Frida was attached, we would see the following differences to the to the prolouge of the function.
+Let's try and see how that was different from the `LD_PRELOAD` method. Attach `gdb` to the running instance of `pew` with `gdb -q -p $(pidof pew)`.
+
+If we were to check what the `sleep()` function looked like before and after Frida was attached, we would see the following differences to the prolouge of the function.
 
 Before Frida:
 
