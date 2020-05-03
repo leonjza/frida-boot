@@ -1,6 +1,6 @@
 # LD_PRELOAD
 
-Before we get our hands dirty with Frida, let's take a detour and implement some hooking ourselves. We will do this by making use of the Linux `LD_PRELOAD` environment variable. From `man ld.so` we can read about this variable (and its many, many friends):
+Before we get our hands dirty with Frida, let's take a detour implement some hooking ourselves. We will do this by making use of the Linux `LD_PRELOAD` environment variable. From `man ld.so` we can read about this variable (and its many, many friends):
 
 ```text
 LD_PRELOAD
@@ -9,7 +9,7 @@ LD_PRELOAD
     functions in other shared objects.
 ```
 
-Basically, what that means is that we can build our own shared library and specify it with the `LD_PRELOAD` environment variale to be loaded when our program starts up. Our shared object can contain a function that already exists in another shared object, and our's will get preference when called.
+Basically, what that means is that we can build our own shared library and specify it with the `LD_PRELOAD` environment variale to be loaded when our program starts up. Our shared object can contain a function that already exists in another shared object, but our function will get preference when called.
 
 Under the hood, when a call to something like `printf` is made for the first time, the C standard library actually dynamically resolves the address of where the code for `printf` really lives. It is possible to avoid this behaviour by compiling an executable with the `-static` flag, meaning all of the logic will be contained in the executable without any external dependencies. The `ldd` tool can be used to see which libraries an exectuable depends on.
 

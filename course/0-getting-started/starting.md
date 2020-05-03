@@ -3,12 +3,13 @@
 The recommended way to start the environment is with the following command:
 
 ```bash
-docker run --rm -it --name frida-boot -p 9999:80 -v $(pwd)/program:/root/code leonjza/frida-boot
+docker run --cap-add SYS_PTRACE --rm -it --name frida-boot -p 9999:80 -v $(pwd)/program:/root/code leonjza/frida-boot
 ```
 
 This will:
 
 - Start the workshop container using the `leonjza/frida-boot` image on Dockerhub
+- Give the container the `SYS_PTRACE` ability so that we can attach a debugger to processes inside of the container.
 - Name the resultant container `frda-boot`
 - Expose port `9999` on your host OS, forwarding it to port `80` inside the container for the documentation
 - Mount the `./program` directory on your host to the `/root/code` directory inside the container

@@ -11,3 +11,9 @@
   - [Hooking 101](1-chapter-1/hooking)
   - [LD_PRELOAD](1-chapter-1/ld_preload)
   - [Hook Internals](1-chapter-1/internals)
+
+* Chaptwer Two
+  - [Frida](2-chapter-2/frida)
+  - [JavaScript API](2-chapter-2/javascript)
+  - [Sleep Hook v2](2-chapter-2/sleep)
+  - [Hook Arguments](2-chapter-2/arguments)
