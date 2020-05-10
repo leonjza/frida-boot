@@ -19,3 +19,11 @@
   - [Interceptor Arguments](2-chapter-2/arguments)
   - [Interceptor Return Values](2-chapter-2/return)
   - [Repurposing Code](2-chapter-2/repurposing)
+
+* Chapter Three
+  - [Building Python Tools](3-chapter-3/tools)
+  - [Channels](3-chapter-3/channels)
+  - [Script Lifecycle](3-chapter-3/lifecycle)
+  - [Frida RPC](3-chapter-3/rpc)
+  - [TypeScript](3-chapter-3/typescript)
+  - [Frida Tools](3-chapter-3/frida-tools)

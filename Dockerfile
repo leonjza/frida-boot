@@ -19,8 +19,10 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     gdb locales procps file ltrace \
     # so that frida-trace can populate args \
     man manpages-dev \
+    # typescript \
+    npm
     # utils
-    vim tmux curl \
+    git vim tmux curl \
   && rm -rf /var/lib/apt/lists/*
 
 # Configure the locale for UTF8 support.

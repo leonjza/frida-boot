@@ -1,0 +1,178 @@
+{
+  "type": "excalidraw",
+  "version": 1,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {
+      "id": "eAV0SujDD1U0d5DMuS_E0",
+      "type": "text",
+      "x": 544.53515625,
+      "y": 158.69921875,
+      "width": 163,
+      "height": 35,
+      "angle": 0,
+      "strokeColor": "#000000",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 548147496,
+      "version": 50,
+      "versionNonce": 1135243096,
+      "isDeleted": false,
+      "text": "script.load()",
+      "font": "28px Virgil",
+      "textAlign": "left",
+      "baseline": 25
+    },
+    {
+      "id": "l-Fuuas0FdBj3WSj2oivm",
+      "type": "text",
+      "x": 588.83203125,
+      "y": 212.21484375,
+      "width": 468,
+      "height": 210,
+      "angle": 0,
+      "strokeColor": "#d9480f",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 2,
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 34996264,
+      "version": 160,
+      "versionNonce": 1219223080,
+      "isDeleted": false,
+      "text": "var testPinPtr = DebugSymbol\n   .getFunctionByName(\"test_pin\");\n\nfor (var i = 0; i < 9999; i++) {\n    doStuff();\n}",
+      "font": "28px Virgil",
+      "textAlign": "left",
+      "baseline": 200
+    },
+    {
+      "id": "vxP3CaU9K5nufK47O6tjv",
+      "type": "line",
+      "x": 581.1015625,
+      "y": 205.8359375,
+      "width": 28.33203125,
+      "height": 2.2109375,
+      "angle": 0,
+      "strokeColor": "#495057",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 2,
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 557838888,
+      "version": 83,
+      "versionNonce": 1648749400,
+      "isDeleted": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -28.33203125,
+          -2.2109375
+        ]
+      ],
+      "lastCommittedPoint": [
+        -28.33203125,
+        -2.2109375
+      ]
+    },
+    {
+      "id": "yCC2EALJKMruU8YmTAkub",
+      "type": "text",
+      "x": 432.9296875,
+      "y": 287.48046875,
+      "width": 184,
+      "height": 35,
+      "angle": 4.71238898038469,
+      "strokeColor": "#364fc7",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 2,
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 592297256,
+      "version": 280,
+      "versionNonce": 1673858648,
+      "isDeleted": false,
+      "text": "~30 seconds",
+      "font": "28px Virgil",
+      "textAlign": "left",
+      "baseline": 25
+    },
+    {
+      "id": "iouELfiY_yTGErVCc0VTs",
+      "type": "line",
+      "x": 553.79296875,
+      "y": 201.16015625,
+      "width": 0.8203125,
+      "height": 231.1328125,
+      "angle": 0,
+      "strokeColor": "#495057",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 2,
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 551928872,
+      "version": 94,
+      "versionNonce": 953007912,
+      "isDeleted": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -0.8203125,
+          231.1328125
+        ]
+      ],
+      "lastCommittedPoint": [
+        -0.8203125,
+        231.1328125
+      ]
+    },
+    {
+      "id": "sis6mlFDoqreaAE_NNqOL",
+      "type": "line",
+      "x": 554.1015625,
+      "y": 431.578125,
+      "width": 32.30859375,
+      "height": 2.0390625,
+      "angle": 0,
+      "strokeColor": "#495057",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 2,
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 1397696344,
+      "version": 28,
+      "versionNonce": 262208040,
+      "isDeleted": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          32.30859375,
+          2.0390625
+        ]
+      ],
+      "lastCommittedPoint": [
+        32.30859375,
+        2.0390625
+      ]
+    }
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff"
+  }
+}
