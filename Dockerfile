@@ -20,8 +20,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     # so that frida-trace can populate args \
     man manpages-dev \
     # typescript \
-    npm
-    # utils
+    npm \
+    # utils \
     git vim tmux curl \
   && rm -rf /var/lib/apt/lists/*
 
