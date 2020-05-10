@@ -6,7 +6,7 @@ We are going to concentrate on the JavaScript component for this. We will write 
 
 ## setup
 
-For this to work (and to demonstrate) we need three things. The target program, `pew` in our case, to run. An empty JavaScript file, lets call it `index.js` and finally the `frida` tool booted to inject into `pew`, loading the (empty for now) `index.js`. So:
+For this to work (and to demonstrate) we need three things. The target program, `pew` in our case, to run. An empty JavaScript file, let’s call it `index.js` and finally the `frida` tool booted to inject into `pew`, loading the (empty for now) `index.js`. So:
 
 - Run `pew` in a shell.
 - Run `touch index.js` in another shell.
@@ -20,7 +20,7 @@ I use `tmux`, so my environment at this stage would have 3 panes open at the mom
 
 ## the index.js script
 
-We will be referring to the Frida JavaScript API documetation a lot for this section. I highy reccomend you give it a thorough read through at some stage.
+We will be referring to the Frida JavaScript API documentation a lot for this section. I highly recommend you give it a thorough read through at some stage.
 
 Using the `LD_PRELOAD` method, we replaced the real implementation of `sleep` with our own one by relying on some dynamic linker foolery. More specifically, given that libraries loaded with `LD_PRELOAD` get preference over other's, by just defining the same symbol as libc we got ours loaded thanks to library preference. This time round though, the application is already running. So how can we replace what `sleep` does?
 
@@ -33,7 +33,7 @@ Interceptor.attach(target, callbacks[, data]):
     Intercept calls to function at target. This is a NativePointer specifying the address of the function you would like to intercept calls to.
 ```
 
-We need to pass along a `NativePointer` as the first argument to `attach()`. Next, the callbacks for `attach()` are `onEnter` and `onLeave`. As the names say, `onEnter` will be called as soon as the _target_ function is entered, and `onLeave` will be called as the _target_ function is returned. The callbacks also have access to the original arguments and return value for the _target_ function. More on this later.
+We need to pass along a `NativePointer` as the first argument to `attach()`. Next, the call backs for `attach()` are `onEnter` and `onLeave`. As the names say, `onEnter` will be called as soon as the _target_ function is entered, and `onLeave` will be called as the _target_ function is returned. The call backs also have access to the original arguments and return value for the _target_ function. More on this later.
 
 Practically our script would look something like this:
 
@@ -44,7 +44,7 @@ Interceptor.attach(target, {
 });
 ```
 
-Before we can go ahead and implement our script, the first piece to solve here is _target_. The documentation for `attach()` states that it wants a `NativePointer`, and reading the [documentation](https://frida.re/docs/javascript-api/#nativepointer) for a `NativePointer` we can see that we can create one from a string (such as `s`). ie: `new NativePointer(s)` / `ptr(s)`. However, `s` needs to be a hex value to construct the pointer from, and given that we are interested in `sleep()`, we can't just use any string.
+Before we can go ahead and implement our script, the first piece to solve here is _target_. The documentation for `attach()` states that it wants a `NativePointer`, and reading the [documentation](https://frida.re/docs/javascript-api/#nativepointer) for a `NativePointer` we can see that we can create one from a string (such as `s`). i.e. `new NativePointer(s)` / `ptr(s)`. However, `s` needs to be a hex value to construct the pointer from, and given that we are interested in `sleep()`, we can't just use any string.
 
 ## resolving sleep statically
 
@@ -70,7 +70,7 @@ $ nm pew
 
 ?> You can also use `readelf -Ws pew` to display similar output, sometimes more readable than `nm`.
 
-The output shows us that `sleep@@GLIBC_2.2.5` has the `U` (undefined) flag, which should be resolved at runtime using the linker (making things like the `LD_PRELOAD` hack possile). The `G_LIBC` is a hint as to which library should have it. Alright, let's take a look at the shared libraries our binary depends on. This can be done with the `ldd` tool:
+The output shows us that `sleep@@GLIBC_2.2.5` has the `U` (undefined) flag, which should be resolved at runtime using the linker (making things like the `LD_PRELOAD` hack possible). The `G_LIBC` is a hint as to which library should have it. Alright, let's take a look at the shared libraries our binary depends on. This can be done with the `ldd` tool:
 
 ```text
 $ ldd pew
@@ -81,7 +81,7 @@ $ ldd pew
 
 ?> Try running `ldd pew` a few times. You should see the base address for the library changes on every run. This is as a result of ASLR.
 
-We know that the `sleep()` function we are targetting here is part of libc, so let's run `nm -D` on `libc.so.6`. The output will be very large (more than 2000 symbols), so lets filter for `sleep()` as well:
+We know that the `sleep()` function we are targeting here is part of libc, so let's run `nm -D` on `libc.so.6`. The output will be very large (more than 2000 symbols), so let’s filter for `sleep()` as well:
 
 ```text
 $ nm -D /lib/x86_64-linux-gnu/libc-2.30.so | grep sleep
@@ -97,7 +97,7 @@ $ nm -D /lib/x86_64-linux-gnu/libc-2.30.so | grep sleep
 
 ?> We add the `-D` flag to check the dynamic symbols that will be available at runtime when using `libc`. By default, `nm` will read the `.symtab` section, which is usually stripped.
 
-Neat, a weak symbol (`W` flag) to `sleep` at `0xcad60`. Unfortunately that is not the value we will use for `s` when invoking `new NativePointer()` as the value is the relative address to the code in libc. Thanks to ASLR, this will be different everytime our program runs. Don't worry about it though, we can resolve these at runtime.
+Neat, a weak symbol (`W` flag) to `sleep` at `0xcad60`. Unfortunately that is not the value we will use for `s` when invoking `new NativePointer()` as the value is the relative address to the code in libc. Thanks to ASLR, this will be different every time our program runs. Don't worry about it though, we can resolve these at runtime.
 
 Let's verify that we got the address of `0xcad60` right using `gdb` quickly:
 
@@ -110,7 +110,7 @@ gef➤  info address sleep
 Symbol "sleep" is at 0xcad60 in a file compiled without debugging.
 ```
 
-In `gdb` we have the same addres for `sleep`. Neat! Now again, ASLR will make this address change everytime a binary is run, so let's see if using `0xcad60` as an offset for the function from libc's base address will get us at the same location.
+In `gdb` we have the same address for `sleep`. Neat! Now again, ASLR will make this address change every time a binary is run, so let's see if using `0xcad60` as an offset for the function from libc's base address will get us at the same location.
 
 To do this start `gdb` on the `wpewleep_test` binary again and set a breakpoint on the `main` function with `b *main`. Next, run the binary with `r` and the program should pause after hitting the breakpoint. At this point the shared libraries should all have been loaded. Next, have a look at the processes memory map with `info proc map` (or `vmmap`):
 
@@ -133,7 +133,7 @@ Mapped address spaces:
 
 ?> You can see the same information for a process outside of `gdb` with `cat /proc/<pid>/maps`.
 
-We can see libc's start address is `0x7ff47c343000` with a zero offset. So, lets see what is at `0x7ff47c343000` + `0xcad60`:
+We can see libc's start address is `0x7ff47c343000` with a zero offset. So, let’s see what is at `0x7ff47c343000` + `0xcad60`:
 
 ```text
 gef➤  info symbol 0x7ff47c343000+0xcad60
@@ -174,7 +174,7 @@ Try that now in your Frida REPL, attached to `pew`.
 ]
 ```
 
-?> Many functions in the Frida API have syncronous and asyncronous versions. The one you use highly depends on the program you are writing. For example, `enumerateModules()` responds to callbacks as modules are discovered, whereas `enumerateModulesSync()` blocks until module resolution is complete, returning an array of discovered modules. Keep this in mind as you read the documentation and write your code!
+?> Many functions in the Frida API have synchronous and asynchronous versions. The one you use highly depends on the program you are writing. For example, `enumerateModules()` responds to call backs as modules are discovered, whereas `enumerateModulesSync()` blocks until module resolution is complete, returning an array of discovered modules. Keep this in mind as you read the documentation and write your code!
 
 The `enumerateModulesSync()` gave us an array of modules available in the target process. If we were interested in only a single module, we could use the `getModuleByName()` call. A variation of the same function exists called `getModuleByAddress()` which does exactly what you think it does. The return to `getModuleByName()` in the Frida world is a `Module` object.
 
@@ -337,6 +337,6 @@ Dump of assembler code for function sleep:
 [ ... ]
 ```
 
-If we were to picture the code flow when we use `Interceptor.attach()` on `sleep()`, consider the following diagram. At _1_, a call to `sleep()` is made. At this point the dynamic linker has already resolved the address for it, so the real `sleep()` gets called. Once inside `sleep()`, the first instruction for the function is to `jmp` to an arbitrary address (and not the normal function prologue) which is a result of Frida. So, at _2_ we effectively enter the Frida world, which eventually will call the `onEnter` function we defined. In our case, we are just logging that we entered the function. Next, at _3_, the real `sleep()` is called, doing whatever it should do. Finally, when we `ret` from `sleep()`, control is passed back to Frida because we defined an `onLeave` function. If you omit this callback, the function would have returned back to the instruction after the caller. Finally, when all of that is done, control is passed back to the original caller at _5_.
+If we were to picture the code flow when we use `Interceptor.attach()` on `sleep()`, consider the following diagram. At _1_, a call to `sleep()` is made. At this point the dynamic linker has already resolved the address for it, so the real `sleep()` gets called. Once inside `sleep()`, the first instruction for the function is to `jmp` to an arbitrary address (and not the normal function prologue) which is a result of Frida. So, at _2_ we effectively enter the Frida world, which eventually will call the `onEnter` function we defined. In our case, we are just logging that we entered the function. Next, at _3_, the real `sleep()` is called, doing whatever it should do. Finally, when we `ret` from `sleep()`, control is passed back to Frida because we defined an `onLeave` function. If you omit this call back, the function would have returned back to the instruction after the caller. Finally, when all of that is done, control is passed back to the original caller at _5_.
 
 ![frida-jmp-patch](../_media/frida-jmp-patch.png)

@@ -1,6 +1,6 @@
 # channels
 
-Let's update our tool so that we implement the previous excercises PIN brute forcer in `crypt` in our own python tool.
+Let's update our tool so that we implement the previous exercises’ PIN brute forcer in `crypt` in our own python tool.
 
 ```python
 import frida
@@ -32,7 +32,7 @@ Running our tool on an instance of `crypt` should yield exactly the same results
 
 ## a small refactor
 
-Now one of the big things that you should see in this script is that we have both JavaScipt and Python in a single file. That's fine for small scripts, but not so much for larger programs, so, let's refactor our tool to read the JavaScript from a file instead. This way, we have the Python code in a single file, and the JavaScript code in another. For example:
+Now one of the big things that you should see in this script is that we have both JavaScript and Python in a single file. That's fine for small scripts, but not so much for larger programs, so, let's refactor our tool to read the JavaScript from a file instead. This way, we have the Python code in a single file, and the JavaScript code in another. For example:
 
 ```javascript
 // index.js
@@ -67,7 +67,7 @@ script.load()
 sys.stdin.read()
 ```
 
-Excellent. We now have a logical seperation between our agent and the injector. Test your tool to make sure it is still able to brute force the password as expected!
+Excellent. We now have a logical separation between our agent and the injector. Test your tool to make sure it is still able to brute force the password as expected!
 
 ## communication channels
 
@@ -99,7 +99,7 @@ for (var i = 0; i < 9999; i++) {
 send("Finished brute");
 ```
 
-If you were to run your tool now it should still function expected, except you wont see the messages you are `send()`-ing! That is because we need to write a small handler that tells our injector what to do when a message comes in from `send()`.
+If you were to run your tool now it should still function expected, except you won’t see the messages you are `send()`-ing! That is because we need to write a small handler that tells our injector what to do when a message comes in from `send()`.
 
 A handler can be added on the `script` object we have in our injector, using the `.on()` method. We are going to respond to messages, so the syntax will be `script.on("message", func)` where `func` is the function to call when we get a message. For example:
 
@@ -139,9 +139,9 @@ Pin is: 3428
 
 ### recv()
 
-Similar to how we can send data from the agent to the injector, the inverse is possible. Using the `recv()` function, your agent can expect input from the Python based program. We can send data from our Python tool to the agent by using the `.post()` function, passing in a JSON formatted payload. One thing to keep in mind when using `recv()` is that it is not a blocking operation by default; ie. your script will not wait for the Python program to `post()` a message before continuing. You can change this if you want by assigning the response to `recv()` to a variable and calling `.wait()` on it.
+Similar to how we can send data from the agent to the injector, the inverse is possible. Using the `recv()` function, your agent can expect input from the Python based program. We can send data from our Python tool to the agent by using the `.post()` function, passing in a JSON formatted payload. One thing to keep in mind when using `recv()` is that it is not a blocking operation by default; i.e. your script will not wait for the Python program to `post()` a message before continuing. You can change this if you want by assigning the response to `recv()` to a variable and calling `.wait()` on it.
 
-Just like how we need a handler in the Python world to receive messages, the same is nessesary in the JavaScript agent.
+Just like how we need a handler in the Python world to receive messages, the same is necessary in the JavaScript agent.
 
 Let's update our tool and see what this looks like.
 
@@ -151,7 +151,7 @@ var testPinPtr = DebugSymbol.getFunctionByName("test_pin");
 var testPin = new NativeFunction(testPinPtr, "int", ["pointer"]);
 
 recv(function(message) {
-    console.log("Recieved message: " + message);
+    console.log("Received message: " + message);
 });
 
 send('Starting brute force');
@@ -171,5 +171,5 @@ Trying: 3427
 Trying: 3428
 Pin is: 3428
 {'type': 'send', 'payload': 'Done with brute force'}
-Recieved message: hello from python!
+Received message: hello from python!
 ```

@@ -9,9 +9,9 @@ LD_PRELOAD
     functions in other shared objects.
 ```
 
-Basically, what that means is that we can build our own shared library and specify it with the `LD_PRELOAD` environment variale to be loaded when our program starts up. Our shared object can contain a function that already exists in another shared object, but our function will get preference when called.
+Basically, what that means is that we can build our own shared library and specify it with the `LD_PRELOAD` environment variable to be loaded when our program starts up. Our shared object can contain a function that already exists in another shared object, but our function will get preference when called.
 
-Under the hood, when a call to something like `printf` is made for the first time, the C standard library actually dynamically resolves the address of where the code for `printf` really lives. It is possible to avoid this behaviour by compiling an executable with the `-static` flag, meaning all of the logic will be contained in the executable without any external dependencies. The `ldd` tool can be used to see which libraries an exectuable depends on.
+Under the hood, when a call to something like `printf` is made for the first time, the C standard library actually dynamically resolves the address of where the code for `printf` really lives. It is possible to avoid this behaviour by compiling an executable with the `-static` flag, meaning all of the logic will be contained in the executable without any external dependencies. The `ldd` tool can be used to see which libraries an executable depends on.
 
 ```bash
 # Dynamic executable
@@ -27,9 +27,9 @@ $ ldd pew
     not a dynamic executable
 ```
 
-When a dynamic executable encouters a function like `printf` for the first time, the libraries in the output of `ldd` will be searched for a function with that name. When we specify the `LD_PRELOAD` variable, we add a new library to that list that will be serached _before_ those in the list shown with `ldd`. Pretty cool eh.
+When a dynamic executable encounters a function like `printf` for the first time, the libraries in the output of `ldd` will be searched for a function with that name. When we specify the `LD_PRELOAD` variable, we add a new library to that list that will be searched _before_ those in the list shown with `ldd`. Pretty cool eh.
 
-## Excercise
+## Exercise
 
 Let's see this in action. Our `pew` program already makes use of functions from the libc shared library. Those functions are ones like `printf` and `sleep`.
 
@@ -71,7 +71,7 @@ DESCRIPTION
 
 ?> The `3` refers to the manual page section we want. Section 3 is typically for library functions from the C standard library.
 
-The `SYNOPSIS` sectin tells us exactly which headers to include in our program, and what the function signature for `sleep()` is.
+The `SYNOPSIS` section tells us exactly which headers to include in our program, and what the function signature for `sleep()` is.
 
 But what if we wanted to override the number of seconds we sleep for? Well, our one option is to change the source code and make it whatever the new value should be. Then, recompile and test. Or, we can use a shared library with `LD_PRELOAD`.
 
@@ -79,7 +79,7 @@ Here comes the fun part! 🎉
 
 ## Shared libraries
 
-The man page for `ld.so`, explaining the `LD_PRELOAD` environment variable says we need to use a shared library for this, so lets build one ouselves. Using the man page in the previous section as reference, we need to implement _exactly_ the same function signature in our library. So, create a new file called `fake_sleep.c` and implement the new and improved `sleep()` function. For now, we will just print a string indicating that our sleep was called and not the one from libc! (_Hint:_ Get the function signature/heads from `man 3 printf`).
+The man page for `ld.so`, explaining the `LD_PRELOAD` environment variable says we need to use a shared library for this, so let’s build one ourselves. Using the man page in the previous section as reference, we need to implement _exactly_ the same function signature in our library. So, create a new file called `fake_sleep.c` and implement the new and improved `sleep()` function. For now, we will just print a string indicating that our sleep was called and not the one from libc! (_Hint:_ Get the function signature/heads from `man 3 printf`).
 
 ```c
 #include <stdio.h>
@@ -96,13 +96,13 @@ unsigned int sleep(unsigned int seconds) {
 
 This shared library will effectively replace what `sleep()` is supposed to do and actually not sleep at all!
 
-Compiling a shared library is a _little_ different to a normal program. This time round we need to give `gcc` some new flags indicating that we want Position Independant Code (PIC) and more specifically a `shared` library. With that in mind we can compile the shared library with:
+Compiling a shared library is a _little_ different to a normal program. This time round we need to give `gcc` some new flags indicating that we want Position Independent Code (PIC) and more specifically a `shared` library. With that in mind we can compile the shared library with:
 
 ```bash
 gcc -fPIC -shared fake_sleep.c -o fake_sleep.so
 ```
 
-?> *Note* The output file name ends with an `.so`. `LD_PRELOAD` will ignore files that do not end with that extention.
+?> *Note* The output file name ends with an `.so`. `LD_PRELOAD` will ignore files that do not end with that extension.
 
 With our shared library implementing `sleep()` ready, its time to hook the real `sleep()`! Do that now with `LD_PRELOAD=./fake_sleep.so ./pew`.
 
@@ -144,9 +144,9 @@ SYNOPSIS
        void *dlsym(void *handle, const char *symbol);
 ```
 
-Seems simple enough but truthfully, its a bit more tricky than that and you are better off reading the larger man page to understand the intrcrecies of how `dlym` works. For the purposes of this excercise though, its just important to know that a handle to the real function should be created, and that handle should be resolved with `dlsym`.
+Seems simple enough but truthfully, it’s a bit more tricky than that and you are better off reading the larger man page to understand the intricacies of how `dlym` works. For the purpose of this exercise though, it’s just important to know that a handle to the real function should be created, and that handle should be resolved with `dlsym`.
 
-One last thing, lets update the sleep to just sleep for `1` second in the library, and not for the amount of time that is actually requestes. With all that coming together, our `fake_sleep.c` detour should now look something like:
+One last thing, lets update the sleep to just sleep for `1` second in the library, and not for the amount of time that is actually requests. With all that coming together, our `fake_sleep.c` detour should now look something like:
 
 ```c
 #define _GNU_SOURCE

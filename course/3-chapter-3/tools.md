@@ -4,7 +4,7 @@ Up until now we have written some simple Frida scripts. There is nothing wrong w
 
 There are a number of approaches to go about more longer term tool development. Let's take a look at some of those. We will be focussing on using the Frida [Python bindings](https://github.com/frida/frida-python)to inject instrumentation into a target process, however you can also have a look at the NodeJS, Swift, C or even .NET bindings if you prefer those.
 
-!> Don't confuse Frida bindings with language interoperability. For example, the .NET bindings simply allow you to interact with Frida programattically to inject into and instrument a target process from a .NET program. Having .NET language interop is a completely different topic.
+!> Don't confuse Frida bindings with language interoperability. For example, the .NET bindings simply allow you to interact with Frida programmatically to inject into and instrument a target process from a .NET program. Having .NET language interop is a completely different topic.
 
 Let's explore some options do built python based tools.
 

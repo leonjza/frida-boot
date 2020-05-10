@@ -12,7 +12,7 @@ Pin: 1234
 Pin:
 ```
 
-Playing with the program you will see that it continiously asks for a pin. We need t guess the right pin!
+Playing with the program you will see that it continuously asks for a pin. We need to guess the right pin!
 
 ## understanding crypt
 
@@ -20,11 +20,11 @@ Now we can totally just open the `crypt.c` source code and have a look at how it
 
 There are _plenty_ of options available to you to decompile software. I want to take this opportunity to introduce you to [BinaryNinja](https://binary.ninja/), more specifically their [cloud](https://cloud.binary.ninja/) decompiler that is free to use, and perfect for little crackmes / CTF's.
 
-To use it, register an account over at [https://cloud.binary.ninja/](https://cloud.binary.ninja/) and sign in. Next, start a new session and upload the `crypt` binary. Once the analysis is compelted, you should see the entrypoint of the binary.
+To use it, register an account over at [https://cloud.binary.ninja/](https://cloud.binary.ninja/) and sign in. Next, start a new session and upload the `crypt` binary. Once the analysis is completed, you should see the entry point of the binary.
 
 ![binja-1](../_media/binja-1.png)
 
-On the left you should see the functions in the binary. Double click on `main`, and then click on the word _Disasembly_ on the right until it says _HLIL_
+On the left you should see the functions in the binary. Double click on `main`, and then click on the word _Disassembly_ on the right until it says _HLIL_
 
 ![binja-2](../_media/binja-2.jpg)
 
@@ -34,7 +34,7 @@ You should see the Control Flow Graph for the `main()` function of `crypt`, wher
 
 Next, a call to `test_pin` is made, taking `var_16` as an argument. If `test_pin` returned `1`, `var_c` becomes 1, meaning the next run of the `while` block, we will have `printf("Pwnd!!")`!
 
-Ok neat, so we are definitely interested in the `test_pin` function it seels. Double click it either in the block, or on the name on the left. This should take you to the CFG for `test_pin`.
+Ok neat, so we are definitely interested in the `test_pin` function it calls. Double click it either in the block, or on the name on the left. This should take you to the CFG for `test_pin`.
 
 ![binja-3](../_media/binja-3.png)
 
@@ -75,9 +75,9 @@ test_pin(0x7ffcf8673602)
  => ret: 0x0
  ```
 
-From that we can deduce that `test_pin` gets an address as an agument, and returns a value such as `0x0`. From the static analysis we did we could see that the return would have either been a `0`, or a `1`, where a `1` is a success.
+From that we can deduce that `test_pin` gets an address as an argument, and returns a value such as `0x0`. From the static analysis we did we could see that the return would have either been a `0`, or a `1`, where a `1` is a success.
 
-Seeing what the pointer in the argument to `test_pin` refers to is a little bit tricker. One way to see what data is there is to do a hexdump of the data at the pointer. For example:
+Seeing what the pointer in the argument to `test_pin` refers to is a little bit trickier. One way to see what data is there is to do a hexdump of the data at the pointer. For example:
 
 ```javascript
 onEnter: function(args) {
@@ -148,7 +148,7 @@ Pin: 12
 Pwnd!!
 ```
 
-That is one way to manipualte the code flow, but its not there yet. We don't really know what the pin is yet (well, you probably do from the static analysis, but let's try different way anyways).
+That is one way to manipulate the code flow, but it’s not there yet. We don't really know what the pin is yet (well, you probably do from the static analysis, but let's try different way anyways).
 
 ## reusing internal code
 
@@ -167,9 +167,9 @@ for (var i = 0; i < 1000; i++) {
 }
 ```
 
-With Frida it is possible to get a "handle" on `test_pin` and then call it arbitrarily at any time to brute brute the real PIN. Mind... blown... 🤯
+With Frida it is possible to get a "handle" on `test_pin` and then call it arbitrarily at any time to brute the real PIN. Mind... blown... 🤯
 
-To do this, there is a new API we need to learn called `NativeFunction` with its documentation avaialble [here](https://frida.re/docs/javascript-api/#nativefunction). A `NativeFunction` is a way to bind a JavaScript object to a C function like `test_pin`. A `NativeFunction` needs to be instantiated, and takes an address of the function in question, together with hints on what the function's return type and arguments are.
+To do this, there is a new API we need to learn called `NativeFunction` with its documentation available [here](https://frida.re/docs/javascript-api/#nativefunction). A `NativeFunction` is a way to bind a JavaScript object to a C function like `test_pin`. A `NativeFunction` needs to be instantiated, and takes an address of the function in question, together with hints on what the function's return type and arguments are.
 
 ```text
 new NativeFunction(address, returnType, argTypes[, abi])
@@ -185,7 +185,7 @@ Let's remove the code for the `Interceptor.attach()` we used to spy on `test_pin
 
 The address for `test_pin` is easy, we can use the `DebugSymbol` API for that. Instantiating a `NativeFunction` will take that address, and we know that `test_pin` will return a `0` or a `1`, so the return type is `int`. As for arguments, a pointer to a string is passed, so that argument will be a single entry array of `["pointer"]`.
 
-To get a pointer to a new string we need to introduce another API. `Memory.allocUtf8String(s)`. This API takes a JavaScript string argument of `s`, alloces it in the process and returns a pointer to it. Perfect, we have everything we need! Let's write the script
+To get a pointer to a new string we need to introduce another API. `Memory.allocUtf8String(s)`. This API takes a JavaScript string argument of `s`, allocates it in the process and returns a pointer to it. Perfect, we have everything we need! Let's write the script
 
 ```javascript
 var testPinPtr = DebugSymbol.getFunctionByName("test_pin");

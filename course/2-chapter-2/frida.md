@@ -22,9 +22,9 @@ A bit different to the first time I read it when it still said:
 
 > Inject JavaScript to explore native apps on Windows, Mac, Linux and iOS.
 
-I had no clue what that meant back the, but even today, both descriptions remain true.
+I had no clue what that meant back then, but even today, both descriptions remain true.
 
-We are not really going to dive into the internals of Frida itself. While I absolutely want to encourage you to do so (and to contibute to the project), that won't be nessesary for now.
+We are not really going to dive into the internals of Frida itself. While I absolutely want to encourage you to do so (and to contribute to the project), that won't be necessary for now.
 
 ## frida components
 
@@ -32,9 +32,9 @@ The Frida project is pretty large, and there are many moving parts to it.
 
 The first, and most important part is the Frida core, written in C. This component is responsible for injecting a JavaScript engine like V8 or Duktape into the target process and runs the JavaScript that you wrote in the target process.
 
-The the next component would be the Frida language bindings. It is possible to communicate with the Frida core using anyone one of the following languges; C, Python, Node Swift and .NET. For this workshop we will be using the Python bindings, but really you are free to choose whichever you prefer.
+The the next component would be the Frida language bindings. It is possible to communicate with the Frida core using anyone one of the following languages; C, Python, Node Swift and .NET. For this workshop we will be using the Python bindings, but really you are free to choose whichever you prefer.
 
-Next, there are language runtime bridges (or gum). These bridges make use of metadata rich rumtimes such as Objective-C and Java on mobile devices that allows you to instrument these higher-level languages without the need to know the intrecacies of the target runtimes themselves. While Objective-C and Java bridges are part of Frida, community bridges for runtimes like Swift and Mono (.NET) also exist.
+Next, there are language runtime bridges (or gum). These bridges make use of metadata rich runtimes such as Objective-C and Java on mobile devices that allows you to instrument these higher-level languages without the need to know the intricacies of the target runtimes themselves. While Objective-C and Java bridges are part of Frida, community bridges for runtimes like Swift and Mono (.NET) also exist.
 
 Finally, there are a set of command line tools that make use of the Python bindings, available when you install the `frida-tool` pip package. The `frida-tools` package includes the base `frida` Read Evaluate Print Loop (REPL) tool, but also utilities such as `frida-ps`, `frida-trace` and `frida-discover`.
 
@@ -44,7 +44,7 @@ Frida can operate in three primary modes:
 
 - Injected (how were are going to use it most of the time)
 - Embedded (basically a shared library that you can make part of a project)
-- Preload (a combination of embedded mode with JavaScript aleady built to autonomously)
+- Preload (a combination of embedded mode with JavaScript already built to autonomously instrument applications)
 
 ## our usage of frida
 
@@ -54,7 +54,7 @@ The way we are going to use Frida in this workshop will be by using the Python b
 
 ![frida-arch](../_media/frida-arch.png)
 
-A more elaborate diagram an be found [here](https://frida.re/docs/hacking/).
+A more elaborate diagram can be found [here](https://frida.re/docs/hacking/).
 
 ## example usage
 
@@ -90,9 +90,9 @@ Spawned `./pew`. Use %resume to let the main thread start executing!
 [Local::pew]->
 ```
 
-Thats it! `pew` spawned, paused and now has Frida connected to it. Behind the scenes you just injected a JavaScript engine into the procress too. l33t! 🎉 To resume `pew` to continue normal operations, just type `%resume` and hit `enter`. You should notice the sweet auto suggestions and tab completion there is too.
+That’s it! `pew` spawned, paused and now has Frida connected to it. Behind the scenes you just injected a JavaScript engine into the process too. l33t! 🎉 To resume `pew` to continue normal operations, just type `%resume` and hit `enter`. You should notice the sweet auto suggestions and tab completion there is too.
 
-Normally the `frida` REPL can be used to quickly prototype small scripts and test things out. For example, in the REPL you can excute any valid JavaScript such as `console.log("poo");`, and the after pressting `enter`, that will get sent to the Frida agent running inside of the process and evaluated. Standard out should be sent back too, resulting in the word `poo` displaying in your shell.
+Normally the `frida` REPL can be used to quickly prototype small scripts and test things out. For example, in the REPL you can execute any valid JavaScript such as `console.log("poo");`, and the after pressing `enter`, that will get sent to the Frida agent running inside of the process and evaluated. Standard out should be sent back too, resulting in the word `poo` displaying in your shell.
 
 To quit the REPL, simply hit `ctrl + d`. You may notice that `pew` is still running after you quit, and this is because quitting Frida simply means it detaches from the target process, not killing it. You should be able to see `pew` still running in the process list, and you can safely kill it with `kill -9 $(pidof pew)`.
 

@@ -1,12 +1,12 @@
 # remote procedure call interface
 
-I'll be honest, all of the things about the `load()` timeout and the intecracies with `send()` and `recv()` are not a lot of bfun to work work. Especially given the async nature of JavaScript, if you are not careful you can cause yourself a ton of headaches with these. Instead, Frida also exposes an RPC interface which in my honest opinion is the way to go about building custom tools.
+I'll be honest, all of the things about the `load()` timeout and the intricacies with `send()` and `recv()` are not a lot of fun to work with. Especially given the async nature of JavaScript, if you are not careful you can cause yourself a ton of headaches with these. Instead, Frida also exposes an RPC interface which in my honest opinion is the way to go about building custom tools.
 
-Before we go about refactoring our PIN bruteforces, let's get the basics down first.
+Before we go about refactoring our PIN brute forcer, let's get the basics down first.
 
 ## rpc 101
 
-The RPC interface has two key components. The first being the `rpc` object in the JavaScript agent, and the second being the the `script.exports` property in the Python world.
+The RPC interface has two key components. The first being the `rpc` object in the JavaScript agent, and the second being the `script.exports` property in the Python world.
 
 ?> The `script.exports` property is also available in other language bindings.
 
@@ -26,7 +26,7 @@ This will define the `brute` function in the agent, and expose it as an RPC expo
 script.exports.brute()
 ```
 
-This pattern comes with a wide array of benefits. First, you won't be reaching any timeout errors as nothing is excuting during script load. Second, we can now make use of the `brute` function from our Python code which gives us much better control over the code where we can define arguments and act on the return value. In fact, we can implement the brute force script multiple ways now.
+This pattern comes with a wide array of benefits. First, you won't be reaching any timeout errors as nothing is executing during script load. Second, we can now make use of the `brute` function from our Python code which gives us much better control over the code where we can define arguments and act on the return value. In fact, we can implement the brute force script multiple ways now.
 
 ## using brute as an RPC function
 
@@ -95,7 +95,7 @@ rpc.exports = {
 }
 ```
 
-As for the logic for `tryPin`, let's think about this for a moment. The `brute` function currently has all the parts we need to get a handle on the real `testPin` function. We can either copy and paste that into the `tryPin` method, or, we can extract it entirely out of the `rpc.exports` object and make it available globally. Getting a handle is a really quick operation too, so there is no risk in hitting a timeout when the script loads. With the handle available, we can simply call the real `testPin` and return the resuls.
+As for the logic for `tryPin`, let's think about this for a moment. The `brute` function currently has all the parts we need to get a handle on the real `testPin` function. We can either copy and paste that into the `tryPin` method, or, we can extract it entirely out of the `rpc.exports` object and make it available globally. Getting a handle is a really quick operation too, so there is no risk in hitting a timeout when the script loads. With the handle available, we can simply call the real `testPin` and return the results.
 
 So, our agent with the new `tryPin` function would now look something like this:
 

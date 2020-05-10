@@ -1,6 +1,6 @@
 # interceptor return values
 
-Much like arguments, we can update return values as well. To demonstrate this we will hook the function used to get the time intervals to sleep for in `pew` called `rand_range`. There is only one problem though, `rand_range` is not an exported funtion in a shared library. Instead, it is part of `pew` itself.
+Much like arguments, we can update return values as well. To demonstrate this we will hook the function used to get the time intervals to sleep for in `pew` called `rand_range`. There is only one problem though, `rand_range` is not an exported function in a shared library. Instead, it is part of `pew` itself.
 
 ## debugsymbol api
 
@@ -27,7 +27,7 @@ This should result in an error as no loaded shared library has a function with t
 
 It may often happen that you have a stripped binary. That means a binary that has all symbols stripped. If that is the case, even the `DebugSymbol` API will not be able to help you. An alternative strategy in this case would be to determine the offset of the function you are interested in using reverse engineering efforts and calculating the targets functions location after leaking a modules base address with Frida.
 
-For example, let's quickly go back to `gdb` and ask for the address of `rand_range`. Note, if your binary is stripped, this wont be possible. You will only have the assembly to work with!
+For example, let's quickly go back to `gdb` and ask for the address of `rand_range`. Note, if your binary is stripped, this won’t be possible. You will only have the assembly to work with!
 
 ```text
 ~/code$ gdb -q ./pew
@@ -79,7 +79,7 @@ Interceptor.attach(rand_range, {
 
 From source code we know that `rand_range` returned an integer. Using the optional `onLeave` callback we can see what the return value will be before it returned to the caller. This is because at this stage the original function would have completed.
 
-Let's implement an `onLeave` callback that prints the return value of `rand_range`:
+Let's implement an `onLeave` call back that prints the return value of `rand_range`:
 
 ```javascript
 var rand_range = DebugSymbol.getFunctionByName("rand_range");
@@ -100,7 +100,7 @@ Running this script, the output should be similar to this, logging the return va
 0x5
 ```
 
-We can update the value using `retval.replace()` within the `onLeave` callback. For example:
+We can update the value using `retval.replace()` within the `onLeave` call back. For example:
 
 ```javascript
 var rand_range = DebugSymbol.getFunctionByName("rand_range");
@@ -117,9 +117,9 @@ Notice how `pew` only waits one second now :)
 
 ## data binding in onenter and onleave
 
-Depending on what your hook does, you may want to affect the return value of a function based on arguements you received. However, both the `onEnter` and `onLeave` callbacks have different arguments and by extention has access to different parts of a hooked function.
+Depending on what your hook does, you may want to affect the return value of a function based on arguments you received. However, both the `onEnter` and `onLeave` call backs have different arguments and by extention has access to different parts of a hooked function.
 
-Using the `this` context within the callbacks its possible to bind data in the `onEnter` callback and make it available in the `onLeave` callback. For example, if we wanted to make the return value of `rand_range` to be the same as the first argument the function gets:
+Using the `this` context within the call backs it’s possible to bind data in the `onEnter` call back and make it available in the `onLeave` callback. For example, if we wanted to make the return value of `rand_range` to be the same as the first argument the function gets:
 
 ```javascript
 var rand_range = DebugSymbol.getFunctionByName("rand_range");

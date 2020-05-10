@@ -1,13 +1,13 @@
 # Hooking 101
 
-Hooking function calls in a program provides us with an incredibly powerful ability to see whats happening "under the hood" of a running program. With hooking, we can "spy" on parts of a programs logic, or modify logic so that the program behaves completely differently. We can even reuse parts of the progam against itself :) Let's look at an example.
+Hooking function calls in a program provides us with an incredibly powerful ability to see what’s happening "under the hood" of a running program. With hooking, we can "spy" on parts of a programs logic, or modify logic so that the program behaves completely differently. We can even reuse parts of the program against itself :) Let's look at an example.
 
 Imagine some C functions for a moment that is responsible crypto related work. Ignoring the actual crypto implementation, they may look something like this:
 
 ```c
 // Encrypt a buffer using key
 void encrypt(int *data, char *key) {
-    // encrytion routine
+    // encryption routine
 }
 
 // Get an encryption key
@@ -24,7 +24,7 @@ Considering the `getKey()` function for a moment, hooking to reveal arguments ma
 
 Conceptually, when you are hooking a function, the method of hooking intercept the call to a function and redirect to a piece of code that you control. When done, it would typically return. Calling the original function is many times optional.
 
-To help visualise this, conider the following diagrams. Without any funny business (read: hooking) going on, a normal function call would occur something like this:
+To help visualise this, consider the following diagrams. Without any funny business (read: hooking) going on, a normal function call would occur something like this:
 
 ![function-call-1](../_media/function-call.png)
 

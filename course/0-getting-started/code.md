@@ -4,7 +4,7 @@ In this workshop you are going to be a polyglot programmer. That means, you will
 
 ## Code inside the container
 
-The container has `vim` installed. So, if you are comfortable with that, simply edit away in there. The only excercise where this approach will probably not work great will be when we get to building more complex Frida agents with `frda-compile`.
+The container has `vim` installed. So, if you are comfortable with that, simply edit away in there. The only exercise where this approach will probably not work great will be when we get to building more complex Frida agents with `frida-compile`.
 
 ## Code outside of the container, but mounted
 

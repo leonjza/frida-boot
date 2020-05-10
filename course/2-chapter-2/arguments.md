@@ -1,12 +1,12 @@
 # interceptor arguments
 
-So far we have written a simple function hook that allows us to spy on calls to `sleep()`. According to `man 3 sleep`, `sleep()` takes one integer argument signalling for how long the should sleep occur. In the `LD_PRELOAD` example we modified that sleep duration, so lets replicate that with Frida.
+So far we have written a simple function hook that allows us to spy on calls to `sleep()`. According to `man 3 sleep`, `sleep()` takes one integer argument signalling for how long the should sleep occur. In the `LD_PRELOAD` example we modified that sleep duration, so let’s replicate that with Frida.
 
 We should already have a Frida script from the [previous section](2-chapter-2/sleep#attaching-to-sleep), so let's continue editing that.
 
 ## the args variable
 
-Using the `Interceptor`, the `onEnter` callback receives a single argument typically called `args`. This variable is actually an array of the arguments the function received. That means that `arg[0]` would be the first argument, `arg[1]` the second and so forth.
+Using the `Interceptor`, the `onEnter` call back receives a single argument typically called `args`. This variable is actually an array of the arguments the function received. That means that `arg[0]` would be the first argument, `arg[1]` the second and so forth.
 
 There is one gotcha with the `args` variable though. It has no idea how many arguments the original function received. `args.length()` is not valid. Taking `sleep()` as an example, we should get the argument it received with `arg[0]`. However, if we try and work with say `arg[1]` or `arg[9]`, those are not arguments but other values from the stack.
 

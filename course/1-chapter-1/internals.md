@@ -1,6 +1,6 @@
 # Internals
 
-So far we have seen how we can use `LD_PRELOAD` to hook the function call to `sleep()`. But what happens under the hood when we do this? To try and get a better view of the internals of this in preperation for playing with Frida, lets attach a debugger and step through the process of resolving a function.
+So far we have seen how we can use `LD_PRELOAD` to hook the function call to `sleep()`. But what happens under the hood when we do this? To try and get a better view of the internals of this in preparation for playing with Frida, lets attach a debugger and step through the process of resolving a function.
 
 ## gdb quick start
 
@@ -14,7 +14,7 @@ The debugger we are going to use is the GNU Debugger, `gdb`. It's super popular 
 - `info break` to list our breakpoints.
 - `del <index>` to delete a breakpoint with the index obtained with `info break`.
 
-To start the debugging session on our test binary called `pew`, simply run `gdb -q ./pew`. You should pre persented with a prompt, similar to this:
+To start the debugging session on our test binary called `pew`, simply run `gdb -q ./pew`. You should pre presented with a prompt, similar to this:
 
 ?> `-q` just silences some default banners.
 
@@ -28,7 +28,7 @@ While we have the source code for this application (given that we wrote it), thi
 
 ### Using nm
 
-Before we use the debugger again, lets see how we can get an idea of which _symbols_ exists in the binary using the `nm` tool. Type `nm -D pew` and check the output:
+Before we use the debugger again, let’s see how we can get an idea of which _symbols_ exists in the binary using the `nm` tool. Type `nm -D pew` and check the output:
 
 ```bash
 $ nm -D pew
@@ -60,7 +60,7 @@ $ nm -D $(which bash)
 [... snip ...]
 ```
 
-You will notice `bash` has many, many more symbols with a wide variety of flags a well! Lots of hooking opprtunities :)
+You will notice `bash` has many, many more symbols with a wide variety of flags a well! Lots of hooking opportunities :)
 
 ?> To learn more about what the flags like `U`/`T`/`w` etc. mean, check out `man nm`.
 
@@ -95,9 +95,9 @@ Non-debugging symbols:
 0x0000000000001274  _fini
 ```
 
-Great. We have a few symbols to work with. The first function we will be interested in would be `main()` which is effectively the entrypoint for our program. While its not the first code that gets executed when the program starts, for now just know that this is where the code we wrote starts. Next, we can see `printf@plt` and `sleep@plt`. Let's focus on these two for now.
+Great. We have a few symbols to work with. The first function we will be interested in would be `main()` which is effectively the entry point for our program. While it’s not the first code that gets executed when the program starts, for now just know that this is where the code we wrote starts. Next, we can see `printf@plt` and `sleep@plt`. Let's focus on these two for now.
 
-When we used `nm` in the prevous section, we saw that these symbols were marked as `U` (undefined). Within `gdb` however we get this `@plt` section. The Procedure Linkage Table (PLT) is essentially just a marker to tell the program that when we compiled the program, we did not know where `sleep` or `printf` was, and the dynamic linker should find those at runtime. The PLT is the entrypoint for that function resolution logic which will reference a section called the Global Offset Table (GOT) for addresses. The GOT is updated after the dynamic linker successfully resolved a functions' address the first time. Once resolved, the program will jump to the real `printf` and continue as normal. Next time the program wants to use `printf`, the offset in the GOT will be used.
+When we used `nm` in the previous section, we saw that these symbols were marked as `U` (undefined). Within `gdb` however we get this `@plt` section. The Procedure Linkage Table (PLT) is essentially just a marker to tell the program that when we compiled the program, we did not know where `sleep` or `printf` was, and the dynamic linker should find those at runtime. The PLT is the entry point for that function resolution logic which will reference a section called the Global Offset Table (GOT) for addresses. The GOT is updated after the dynamic linker successfully resolved a functions' address the first time. Once resolved, the program will jump to the real `printf` and continue as normal. Next time the program wants to use `printf`, the offset in the GOT will be used.
 
 ![plt-got](../_media/plt-got.png)
 
@@ -117,7 +117,7 @@ Reading symbols from ./sleep_test...
 gef➤
 ```
 
-Next, let's dissassemble the `main` function and see what the machine code for it looks like.
+Next, let's disassemble the `main` function and see what the machine code for it looks like.
 
 ```bash
 gef➤  disas main
@@ -158,7 +158,7 @@ We don't have to dive into what the assembly actually means line by line. Instea
    0x00000000000011ff <+82>: call   0x1070 <sleep@plt>
 ```
 
-?> Notice the call to `puts`. This is for the first line where we wrote the string "Starting up!", but because of compiler optimisations, the fuction got replaced to a `puts`.
+?> Notice the call to `puts`. This is for the first line where we wrote the string "Starting up!", but because of compiler optimisations, the function got replaced to a `puts`.
 
 Let's go ahead and put a breakpoint on the `main` function of our program. We can do this with:
 
@@ -183,11 +183,11 @@ The first parts of the output you will get when hitting a breakpoint is the CPU 
 
 ![breakpoint](../_media/breakpoint-1.png)
 
-Scrolling down towards the end of the outout, we should see the _code_ and _trace_ sections. These are the only sections we are really going to be interested in. The _code_ section contains the instructions the CPU is going to perform. The _trace_ section is a dynamic view that tries and show context of the functions that have been called. For many reasons this view can be incorrect or have trouble showing accurate data, but its useful nonetheless.
+Scrolling down towards the end of the output, we should see the _code_ and _trace_ sections. These are the only sections we are really going to be interested in. The _code_ section contains the instructions the CPU is going to perform. The _trace_ section is a dynamic view that tries and show context of the functions that have been called. For many reasons this view can be incorrect or have trouble showing accurate data, but its useful nonetheless.
 
 ![code-stack](../_media/code-stack.png)
 
-The view you are looking at now can be retreived at anytime while a program is running by issuing the `context` command.
+The view you are looking at now can be retrieved at any time while a program is running by issuing the `context` command.
 
 ### libc function resolution
 
@@ -229,7 +229,7 @@ Neat, you have stepped one instruction in the debugger. Many of the context view
 
 ?> After entering `si` and hitting `enter`, the next time you hit `enter`, the last command (`si` in this case) will be run again.
 
-Continue stepping until you enter the `puts@plt` function (that is after the `call <puts@plt>` was executed). This will be the case after a few `si` invocations and will evnetually look like this:
+Continue stepping until you enter the `puts@plt` function (that is after the `call <puts@plt>` was executed). This will be the case after a few `si` invocations and will eventually look like this:
 
 ![puts](../_media/enter-puts.png)
 
@@ -283,9 +283,9 @@ printf@plt + 6 in section .plt of /root/code/pew
 
 ### following printf
 
-Let's continue though `main` until we reach the `call printf@plt` instruction. There is quite a bit of code which could make stepping confusing, so instead, we can add another breakpoint on the location we are interested in. To do this, lets first dissasemble the `main()` function, and then add the breakpoint on the location where `ptrintf()` is going to be called.
+Let's continue though `main` until we reach the `call printf@plt` instruction. There is quite a bit of code which could make stepping confusing, so instead, we can add another breakpoint on the location we are interested in. To do this, lets first disassemble the `main()` function, and then add the breakpoint on the location where `ptrintf()` is going to be called.
 
-Get the dissasembly for the `main()` function with `disas main`:
+Get the disassembly for the `main()` function with `disas main`:
 
 ```text
 gef➤  disas main
@@ -315,7 +315,7 @@ Dump of assembler code for function main:
 End of assembler dump.
 ```
 
-?> The `=>` character indicates the location of the instruction pointer whish is the next instruction that will be executed if we continued through the program.
+?> The `=>` character indicates the location of the instruction pointer which is the next instruction that will be executed if we continued through the program.
 
 Next, we set a breakpoint on the line that shows `call   0x555e9e1a3040 <printf@plt>`. The address for this line for the current run of `pew` is `0x0000555e9e1a31f5`, so we set a breakpoint with `b *0x0000555e9e1a31f5`.
 
@@ -332,7 +332,7 @@ Thats it! We can now continue running the program with `c`, and watch as we hit 
 
 The very first instruction after the `call` is a jump to the GOT region with `jmp    QWORD PTR [rip+0x2fda]`. The next is to push `0x1` to the stack and then jump to another address. Stepping through this code you will notice the first jump to the GOT section is not taken. Instead, the `0x1` is pushed to the stack and the following jump _is_ taken.
 
-This process is really the beginning of the Dynamic linker doing its thing. You can step quite a few instructions to get a feel for how complex this process really is. :D Just keep going with `si`. Even though `gef` shows a nice trace in the context output, you can ask `gdb` to generate you a backtrace as well. Do this with `bt`.
+This process is really the beginning of the Dynamic linker doing its thing. You can step quite a few instructions to get a feel for how complex this process really is. :D Just keep going with `si`. Even though `gef` shows a nice trace in the context output, you can ask `gdb` to generate you a back trace as well. Do this with `bt`.
 
 ```text
 gef➤  bt
@@ -343,7 +343,7 @@ gef➤  bt
 gef➤
 ```
 
-After running `si` a few times, you are probably going to be pretty deep into the dynamic linker doing its thing. We don't have to understand all of that, just that its a complex process. Let's return all the way back to `main` again. We can do this by entering the `finish` command which should break on return of the current function. Depending on how far you stepped, you may need to `finish` a few times before you will be back to `main` right after the call to `printf@plt`.
+After running `si` a few times, you are probably going to be pretty deep into the dynamic linker doing its thing. We don't have to understand all of that, just that it’s a complex process. Let's return all the way back to `main` again. We can do this by entering the `finish` command which should break on return of the current function. Depending on how far you stepped, you may need to `finish` a few times before you will be back to `main` right after the call to `printf@plt`.
 
 ```text
 # Code
@@ -366,7 +366,7 @@ Given that our program is in the infinite loop at this stage with the call to ju
 
 So far we have seen how the dynamic linker resolved libc functions (sort-of), storing the results in the GOT so that the next time the same function is called it knows where it is. How does that process look when we are using `LD_PRELOAD`?
 
-Not much different to be honest. Let's take a look. We are going to start up a new debuggig session for `pew` and like before, set a breakpoint on `main` too. However, before we run the program (with `r`), we are going to set the `LD_PRELOAD` environment vaiable within `gdb` first. Do this with `set environment LD_PRELOAD ./fake_sleep.so`. For example:
+Not much different to be honest. Let's take a look. We are going to start up a new debuggig session for `pew` and like before, set a breakpoint on `main` too. However, before we run the program (with `r`), we are going to set the `LD_PRELOAD` environment variable within `gdb` first. Do this with `set environment LD_PRELOAD ./fake_sleep.so`. For example:
 
 ```text
 gef➤  b *main
@@ -464,7 +464,7 @@ GOT protection: Partial RelRO | GOT functions: 6
 [0x55b6bc044040] rand@GLIBC_2.2.5  →  0x7f7115cd80f0
 ```
 
-In `gdb`, we can ask for information about symbols. We can do this with the `info symbol` command, which takes one argument. Lets check out some values from the GOT to see where they are.
+In `gdb`, we can ask for information about symbols. We can do this with the `info symbol` command, which takes one argument. Let’s check out some values from the GOT to see where they are.
 
 ```bash
 gef➤  info symbol puts

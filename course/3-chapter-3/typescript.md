@@ -6,28 +6,28 @@ The documentation website will always serve as a quick reference for how to use 
 
 ## typescript intro for us mere mortals
 
-Don't be scared when you read about TypeScript. The JavaScript syntax you know today is also valid TypeScript. The difference is that TypeScript offers extra, optional syntax sugar that turns JavaScript in to a typed langauge. That means, instead of you realising at runtime you are using the wrong object type, TypeScript will give you the error that that will happen before you run!
+Don't be scared when you read about TypeScript. The JavaScript syntax you know today is also valid TypeScript. The difference is that TypeScript offers extra, optional syntax sugar that turns JavaScript in to a typed language. That means, instead of you realising at runtime you are using the wrong object type, TypeScript will give you the error that that will happen before you run!
 
-The other really great thing this offers is is the ability to use any package availble in the nodejs ecosystem in your agent! That means you can do crazy things like embed a webserver into your target process. Aditionally, you can make use of the latest and greatest JavaScript syntax (like ES6), and easily transpile it for runtimes that do not support that (like Duktape).
+The other really great thing this offers is the ability to use any package available in the NodeJS ecosystem in your agent! That means you can do crazy things like embed a webserver into your target process. Additionally, you can make use of the latest and greatest JavaScript syntax (like ES6), and easily transpile it for runtimes that do not support that (like Duktape).
 
 As far as "what is the minimum amount of things I need to know to use it" goes, it's really just two things.
 
 1. You need to transpile your TypeScript to JavaScript. That means there is a process that needs to run to take the TypeScript you have written and translate it into the JavaScript version of your choosing.
 2. Once transpiled, the resultant agent file (usually `_agent.js`) is what you load with your tool.
 
-Really, thats it! The setup to use TypeScript is also really easy. You need three things which we will go through in detail in the next section.
+Really, that’s it! The setup to use TypeScript is also really easy. You need three things which we will go through in detail in the next section.
 
 1. Get [VSCode](https://code.visualstudio.com/).
 2. Make sure you have the `npm` command (this is already setup for you in the Docker container, but now you know).
 3. The sample agent repository to use as a skeleton. Clone it with `git clone https://github.com/oleavr/frida-agent-example.git`.
 
-## environemnt setup for frida & typescript
+## environment setup for frida & typescript
 
 As far as VScode goes, you need to head over to the download page and get it. How that process works sort of depends in your OS. Good luck.
 
 Next, make sure you have the `npm` command available. On Debian based OS's you can get it with a simple `apt install npm`.
 
-Finally, clone the example TypeSript agent repository. You can do this with `git cone https://github.com/oleavr/frida-agent-example.git` from the `code/` directory you have. Once cloned, `cd` into the `frida-agent-example` repository and run `npm install`. Thats it, you are ready to start developing using TypeScript!
+Finally, clone the example Typescript agent repository. You can do this with `git cone https://github.com/oleavr/frida-agent-example.git` from the `code/` directory you have. Once cloned, `cd` into the `frida-agent-example` repository and run `npm install`. That’s it, you are ready to start developing using TypeScript!
 
 !> This is the only place where if you chose to code using `vim` inside of the container, you will need to work outside the container for VSCode to see the files.
 
@@ -37,7 +37,7 @@ With the project prepared on disc, you should now be ready to open it in VSCode.
 
 ![vscode-project](../_media/vscode-project.jpg)
 
-Next, navigate to the `agent/index.ts` file. There should be some content already populated for you, which you can remove and replace with the RPC example from the previus chapter. The only difference is we will replace our `console.log()` statements to make use of the `log` function that comes with the example:
+Next, navigate to the `agent/index.ts` file. There should be some content already populated for you, which you can remove and replace with the RPC example from the previous chapter. The only difference is we will replace our `console.log()` statements to make use of the `log` function that comes with the example:
 
 ```typescript
 import { log } from "./logger";

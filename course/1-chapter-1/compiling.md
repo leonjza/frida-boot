@@ -1,6 +1,6 @@
 # Compiling the application
 
-Having familirised ourselves with our sample application a little, we can go ahead and compile it in the container.
+Having familiarised ourselves with our sample application a little, we can go ahead and compile it in the container.
 
 ## Performing the compile
 

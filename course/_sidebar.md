@@ -27,3 +27,4 @@
   - [Frida RPC](3-chapter-3/rpc)
   - [TypeScript](3-chapter-3/typescript)
   - [Frida Tools](3-chapter-3/frida-tools)
+  - [Other Operating Modes](3-chapter-3/operating-modes)
