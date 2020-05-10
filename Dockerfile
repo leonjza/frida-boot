@@ -41,12 +41,13 @@ RUN curl -fsSL https://github.com/hugsy/gef/raw/master/gef.py -o ~/.gdbinit-gef.
 
 # Frida Server
 RUN curl -fsSL https://github.com/frida/frida/releases/download/12.8.20/frida-server-12.8.20-linux-x86_64.xz -o /tmp/frida-server.xz && \
-    unxz /tmp/frida-server && \
+    unxz /tmp/frida-server.xz && \
     mv /tmp/frida-server /usr/local/bin && \
     chmod +x /usr/local/bin/frida-server
 
 # Frida Gadget
-# https://github.com/frida/frida/releases/download/12.8.20/frida-gadget-12.8.20-linux-x86_64.so.xz
+RUN curl -fsSL https://github.com/frida/frida/releases/download/12.8.20/frida-gadget-12.8.20-linux-x86_64.so.xz -o /root/frida-gadget.so.xz && \
+    unxz /root/frida-gadget.so.xz
 
 # Configure the documentation
 RUN rm -Rf /var/www/html
