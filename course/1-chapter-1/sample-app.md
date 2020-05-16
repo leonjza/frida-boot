@@ -1,8 +1,8 @@
 # The Sample Application
 
-All of the programs in their final state can be found in the [`software/`](https://github.com/leonjza/frida-boot/tree/master/software) folder. If ever you need to quickly refer to a snippet of code for any reason, this would be a good place to look.
+All of the programs that we are going to build in their final state can be found in the [`software/`](https://github.com/leonjza/frida-boot/tree/master/software) folder. If ever you need to quickly refer to a snippet of code for any reason, this would be a good place to look.
 
-The main program we will be using will be referred to as `pew`, with its source code available in the `software/` folder as well as in the snippet below. Copy the source code and save it in a file called `pew.c`
+One of the main programs we will be using will be referred to as `pew`, with its source code available in the `software/` folder as well as in the snippet below. Copy the source code and save it in a file called `pew.c` in the `code/` folder.
 
 ```c
 #include <stdio.h>

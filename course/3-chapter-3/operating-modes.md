@@ -206,3 +206,47 @@ Now when you run crypt, you should seed Frida boot up as well!
 ```
 
 ?> In case you were curious, this `patchelf` method is the basic premise of how the "patching" phase works in [objection](https://github.com/sensepost/objection).
+
+## frida-gadget configuration
+
+The Gadget can be configured to behave in different ways. For example, you can make the Gadget listen on all interface, not just localhost, open a port other than 27042 or, make it load a script and run it by default, all without a Frida client connected.
+
+From the [docs](https://frida.re/docs/gadget/) we can see the format the configuration file takes. In a nut shell, the file should contain one JSON object with a few key/value pairs. An example configuration which is also the default configuration for the gadget is:
+
+```json
+{
+  "interaction": {
+    "type": "listen",
+    "address": "127.0.0.1",
+    "port": 27042,
+    "on_load": "wait"
+  }
+}
+```
+
+If we wanted to change the behaviour of the Gadget to not pause the program until a Frida tool resumes it, we can change the `on_load` key to `resume`.
+
+```json
+{
+  "interaction": {
+    "type": "listen",
+    "address": "127.0.0.1",
+    "port": 27042,
+    "on_load": "resume"
+  }
+}
+```
+
+The configuration file itself needs to live next to the Gadget's `.so` file and have the same name with the extention being `.config` instead of `.so`. Save a file with this contents called `frida-gadget.config` and run the patched `crypt` binary again.
+
+```text
+~/code$ ./crypt
+Pin: [Frida INFO] Listening on 127.0.0.1 TCP port 27042
+
+Pin:
+Pin:
+```
+
+You should now see the Gadget booted and the application is ready to accept input without first connecting the Frida REPL.
+
+Check out the documentation or more interesting configuration options!
