@@ -60,6 +60,8 @@ ADD software /root/software
 VOLUME /root/code
 WORKDIR /root
 RUN echo 'export PS1="\[\e[30;42m\]frida-boot\[\e[m\]:\w\\$ "' > ~/.bashrc
+RUN echo ':set tabstop=4\n:set shiftwidth=4\n:set expandtab\nsyntax on' > ~/.vimrc
+
 
 # nginx serving docs
 EXPOSE 80

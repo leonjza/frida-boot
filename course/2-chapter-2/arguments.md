@@ -63,10 +63,26 @@ var buf = Memory.allocUtf8String("Frida sleep! :D\n");
 
 Interceptor.attach(printf, {
     onEnter: function(args) {
-    console.log("printf(\"" + args[0].readCString().trim() + "\")");
-    args[0] = buf;  // update the argument to printf
+        console.log("printf(\"" + args[0].readCString().trim() + "\")");
+        args[0] = buf;  // update the argument to printf
     }
 });
 ```
 
-Excellent! Let's move on.
+## register access
+
+While a bit of a more advanced topic, you actually also have access to the execution context of the function in terms of the programs registers, return address and much more. You can even set new values to registers by assigning them, for example: `this.context.eax = ptr("0x0")`
+
+```javascript
+var printf = Module.getExportByName(null, "printf");
+
+Interceptor.attach(printf, {
+    onEnter: function(args) {
+        console.log('Context information:');
+        console.log('Context  : ' + JSON.stringify(this.context, null, 4));
+        console.log('Return   : ' + this.returnAddress);
+        console.log('ThreadId : ' + this.threadId);
+        console.log('Errornr  : ' + this.err);
+    }
+});
+```
