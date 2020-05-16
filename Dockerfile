@@ -16,7 +16,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     # frida and compiler stuff \
     python3-pip build-essential \
     # to debug stuff \
-    gdb locales procps file ltrace \
+    gdb locales procps file ltrace patchelf \
     # so that frida-trace can populate args \
     man manpages-dev \
     # typescript \
