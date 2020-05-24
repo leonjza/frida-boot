@@ -1,0 +1,11 @@
+var rand_range = DebugSymbol.getFunctionByName("rand_range");
+
+Interceptor.attach(rand_range, {
+    onEnter: function(args) {
+        this.arg1 = args[0];
+    },
+    onLeave: function(retval) {
+        console.log(retval);
+        retval.replace(ptr(this.arg1));
+    }
+});

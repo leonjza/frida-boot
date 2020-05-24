@@ -1,0 +1,9 @@
+var testPinPtr = DebugSymbol.getFunctionByName("test_pin");
+var testPin = new NativeFunction(testPinPtr, "int", ["pointer"]);
+
+rpc.exports = {
+    testPin: function(p) {
+        var pin = Memory.allocUtf8String(p);
+        return testPin(pin);
+    }
+}

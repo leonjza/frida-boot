@@ -1,0 +1,8 @@
+var testPinPtr = DebugSymbol.getFunctionByName("test_pin");
+var testPin = new NativeFunction(testPinPtr, "int", ["pointer"]);
+
+// Try a PIN of 1111
+var pin = Memory.allocUtf8String("1111");
+var r = testPin(pin);
+
+console.log(r);

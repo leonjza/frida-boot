@@ -3,6 +3,8 @@ FROM debian:bullseye-slim
 LABEL maintainer="@leonjza"
 LABEL github="https://github.com/leonjza/frida-boot"
 
+ENV FRIDA_VERSION 12.9.3
+
 # https://unix.stackexchange.com/a/480460
 # We need those man pages for frida-trace
 RUN sed -i '/path-exclude \/usr\/share\/man/d' /etc/dpkg/dpkg.cfg.d/docker && \
@@ -40,14 +42,20 @@ RUN curl -fsSL https://github.com/hugsy/gef/raw/master/gef.py -o ~/.gdbinit-gef.
     echo source ~/.gdbinit-gef.py >> ~/.gdbinit
 
 # Frida Server
-RUN curl -fsSL https://github.com/frida/frida/releases/download/12.8.20/frida-server-12.8.20-linux-x86_64.xz -o /tmp/frida-server.xz && \
+RUN curl -fsSL https://github.com/frida/frida/releases/download/${FRIDA_VERSION}/frida-server-${FRIDA_VERSION}-linux-x86_64.xz -o /tmp/frida-server.xz && \
     unxz /tmp/frida-server.xz && \
     mv /tmp/frida-server /usr/local/bin && \
     chmod +x /usr/local/bin/frida-server
 
 # Frida Gadget
-RUN curl -fsSL https://github.com/frida/frida/releases/download/12.8.20/frida-gadget-12.8.20-linux-x86_64.so.xz -o /root/frida-gadget.so.xz && \
+RUN curl -fsSL https://github.com/frida/frida/releases/download/${FRIDA_VERSION}/frida-gadget-${FRIDA_VERSION}-linux-x86_64.so.xz -o /root/frida-gadget.so.xz && \
     unxz /root/frida-gadget.so.xz
+
+# frida-agent-example
+RUN cd /root && \
+    git clone https://github.com/oleavr/frida-agent-example.git && \
+    cd frida-agent-example && \
+    npm install
 
 # Configure the documentation
 RUN rm -Rf /var/www/html

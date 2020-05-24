@@ -1,0 +1,30 @@
+import { log } from "./logger";
+import * as http from "http";
+
+const testPinPtr = DebugSymbol.getFunctionByName("test_pin");
+const testPin = new NativeFunction(testPinPtr, "int", ["pointer"]);
+
+rpc.exports = {
+    testPin: function(p: string) {
+        const pin = Memory.allocUtf8String(p);
+        return testPin(pin);
+    },
+    httpServer: function() {
+        http.createServer((req, res) => {
+            const pin = req.url? req.url.replace('/', '') : '';
+            const check = this.testPin(pin);
+
+            log(`Request to check ${req.url} returned ${check}`);
+
+            if (check == 1) {
+                res.writeHead(200, {'Content-Type': 'text/plain'});
+                res.write(`Welcome!\n`);
+            } else {
+                res.writeHead(401, {'Content-Type': 'text/plain'});
+                res.write(`Wrong PIN\n`);
+            }
+
+            res.end();
+        }).listen(1337);
+    }
+}

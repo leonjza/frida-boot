@@ -1,0 +1,9 @@
+import frida
+import sys
+
+session = frida.attach("crypt")
+script = session.create_script("""
+  console.log(Frida.version);
+""")
+script.load()
+

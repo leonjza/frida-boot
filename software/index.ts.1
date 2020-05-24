@@ -1,0 +1,14 @@
+import { log } from "./logger";
+
+log(`Starting from a TypeScript sourced file`);
+
+const testPinPtr = DebugSymbol.getFunctionByName("test_pin");
+const testPin = new NativeFunction(testPinPtr, "int", ["pointer"]);
+
+rpc.exports = {
+    testPin: function(p: string) {
+        const pin = Memory.allocUtf8String(p);
+        return testPin(pin);
+    }
+}
+

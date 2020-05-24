@@ -1,0 +1,13 @@
+var testPinPtr = DebugSymbol.getFunctionByName("test_pin");
+var testPin = new NativeFunction(testPinPtr, "int", ["pointer"]);
+
+for (var i = 0; i < 9999; i++) {
+    console.log("Trying: " + i.toString());
+    var pin = Memory.allocUtf8String(i.toString());
+    var r = testPin(pin);
+
+    if (r == 1) {
+        console.log("Pin is: " + i.toString());
+        break;
+    }
+}

@@ -130,6 +130,8 @@ You may not always want to completely replace a function though. Instead, you ma
 
 !> This is a bit of a more advanced topic. Don't stress if everything isn't perfectly clear.
 
+![sleep-proxy](../_media/sleep-proxy.png)
+
 With our shared library overriding the call to `sleep()`, we need to figure out where the real `sleep()` is if we want to make use of it. One way to do that is call `dlsym` to dynamically try and determine the address of a symbol (in our case the real `sleep()`). With the address, we can proceed to call the original `sleep()` directly, without relying on the linker to resolve it. So how do we call `dlsym()`? `man 3 dlsym`!
 
 ```text

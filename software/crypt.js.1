@@ -1,0 +1,10 @@
+var testPin = DebugSymbol.getFunctionByName("test_pin");
+
+Interceptor.attach(testPin, {
+    onEnter: function(args) {
+        console.log("test_pin(" + args[0] + ")");
+    },
+    onLeave: function(retval) {
+        console.log(" => ret: " + retval);
+    }
+});

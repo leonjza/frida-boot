@@ -1,0 +1,11 @@
+var sleep = Module.getExportByName(null, "sleep");
+
+Interceptor.attach(sleep, {
+    onEnter: function(args) {
+        console.log("[*] Sleep from Frida!");
+    },
+    onLeave: function(retval) {
+        console.log("[*] Done sleeping from Frida!");
+    }
+});
+

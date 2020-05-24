@@ -1,0 +1,9 @@
+import frida
+import sys
+
+with open("index.js", "r") as f:
+    agent = f.read()
+
+session = frida.attach("crypt")
+script = session.create_script(agent)
+script.load()

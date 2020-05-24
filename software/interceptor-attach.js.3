@@ -1,0 +1,12 @@
+var printf = Module.getExportByName(null, "printf");
+
+// Allocate a new memory region, returning the pointer to the string.
+var buf = Memory.allocUtf8String("Frida sleep! :D\n");
+
+Interceptor.attach(printf, {
+    onEnter: function(args) {
+        // console.log("printf(\"" + args[0].readCString().trim() + "\")");
+        args[0] = buf;  // update the argument to printf
+    }
+});
+

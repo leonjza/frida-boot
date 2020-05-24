@@ -1,0 +1,16 @@
+import frida
+import sys
+
+with open("frida-agent-example/_agent.js", "r") as f:
+    agent = f.read()
+
+session = frida.attach("crypt")
+script = session.create_script(agent)
+script.load()
+
+api = script.exports
+print("starting HTTP server...")
+api.http_server()
+
+# keep the server alive now
+sys.stdin.read()
