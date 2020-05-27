@@ -3,7 +3,7 @@ FROM debian:bullseye-slim
 LABEL maintainer="@leonjza"
 LABEL github="https://github.com/leonjza/frida-boot"
 
-ENV FRIDA_VERSION 12.9.3
+ENV FRIDA_VERSION 12.9.4
 
 # https://unix.stackexchange.com/a/480460
 # We need those man pages for frida-trace
