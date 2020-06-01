@@ -27,20 +27,17 @@ build)
     docker build -t frida-boot:local .
     ;;
 run)
-    echo "> start a new container with the following command:"
+    echo "> starting a new container"
     echo
-    echo "docker run --cap-add SYS_PTRACE --rm -it" \
-         "--name frida-boot -p9999:80 -p1337:1337" \
-         "-v FULL_PATH_TO_LOCAL_CODE_FOLDER:/root/code" \
-         "frida-boot"
-    echo
-    echo "> Replace the FULL_PATH_TO_LOCAL_CODE_FOLDER section with the local" \
-         "directory you want to store you code in. ie: /home/leon/code"
+    docker run --cap-add SYS_PTRACE --rm -it --name frida-boot -p9999:80 \
+        -v $(pwd)/code:/root/code frida-boot
     ;;
 run-dev)
     echo "> runing a content dev instance"
     echo "> webserver exposed on port 9999"
-    docker run --cap-add SYS_PTRACE --rm -it --name frida-boot -p9999:80 -p1337:1337  -v $(pwd)/course:/var/www/html frida-boot:local
+    docker run --cap-add SYS_PTRACE --rm -it --name frida-boot -p9999:80 \
+        -v $(pwd)/code:/root/code \
+        -v $(pwd)/course:/var/www/html frida-boot:local
     ;;
 shell)
     echo "> spawning new shell in the frida-boot container"
