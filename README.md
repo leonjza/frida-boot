@@ -15,7 +15,7 @@
 - `git clone github.com/leonjza/frida-boot`
 - `cd frida-boot`
 - `./docker.sh pull`
-- `docker.sh run`
+- `./docker.sh run`
 
 After running the container, all of the workshop content will be available at <http://localhost:9999>.
 
