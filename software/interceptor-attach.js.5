@@ -6,6 +6,6 @@ Interceptor.attach(rand_range, {
     },
     onLeave: function(retval) {
         console.log(retval);
-        retval.replace(ptr(this.arg1));
+        retval.replace(this.arg1);
     }
 });
