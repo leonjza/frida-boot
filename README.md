@@ -6,7 +6,12 @@
   <br>
 </h1>
 
-<h4 align="center">A binary instrumentation workshop, using <a href="https://frida.re" target="_blank">Frida</a>, for beginners!</h4>
+<h4 align="center">
+  A binary instrumentation workshop, using <a href="https://frida.re" target="_blank">Frida</a>, for beginners!
+  <p align="center">
+    <a href="https://hub.docker.com/r/leonjza/frida-boot"><img alt="Docker Cloud Build Status" src="https://img.shields.io/docker/cloud/build/leonjza/frida-boot"></a>
+  </p>
+ </h4>
 
 <img align="right" src="./images/frida-boot-web.png" height="320" alt="frida-boot">
 
