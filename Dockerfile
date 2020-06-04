@@ -67,13 +67,13 @@ ADD software /root/software
 # Defaults
 VOLUME /root/code
 WORKDIR /root
-RUN echo 'export PS1="\[\e[30;42m\]frida-boot\[\e[m\]:\w\\$ "' > ~/.bashrc
-RUN echo ':set tabstop=4\n:set shiftwidth=4\n:set expandtab\nsyntax on' > ~/.vimrc
 
+ADD docker.d/.bashrc /root/.bashrc
+ADD docker.d/.motd /root/.motd
+ADD docker.d/.vimrc /root/.vimrc
+ADD docker.d/docker-entrypoint.sh /docker-entrypoint.sh
 
 # nginx serving docs
 EXPOSE 80
-
-ADD docker-entrypoint.sh /docker-entrypoint.sh
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
