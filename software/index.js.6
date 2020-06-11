@@ -1,0 +1,29 @@
+const testPinPtr = DebugSymbol.getFunctionByName("test_pin");
+const p = Memory.alloc(Process.pointerSize);
+p.writePointer(testPinPtr);
+
+const cm = new CModule(`
+#include <stdio.h>
+#include <glib.h>
+
+extern volatile gpointer p;
+
+void init() {
+    printf("CModule up\n");
+}
+
+int check(char * pin) {
+    int (*f)(chr);
+    f = p;
+    return f(pin);
+}
+`, { p });
+const check = new NativeFunction(cm.check, 'int', ['pointer']);
+
+rpc.exports = {
+    checkValue: function(pin) {
+        const v = Memory.allocUtf8String(pin);
+        return check(v);
+    }
+}
+

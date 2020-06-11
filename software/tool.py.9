@@ -1,0 +1,19 @@
+import frida
+import sys
+
+with open("index.js", "r") as f:
+    agent = f.read()
+
+session = frida.attach("crypt")
+script = session.create_script(agent, runtime='v8')
+script.load()
+
+api = script.exports
+
+for x in range(0, 9999):
+    res = api.check_value(str(x))
+    if res == 0:
+        continue
+
+    print(f"Pin: {x}")
+    break
