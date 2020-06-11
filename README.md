@@ -13,7 +13,7 @@
   </p>
  </h4>
 
-## Quickstart
+## quickstart
 
 <img align="right" src="./images/frida-boot-web.png" height="320" alt="frida-boot">
 
@@ -24,9 +24,9 @@
 
 After running the container, all of the workshop content will be available at <http://localhost:9999>.
 
-## workshop slides
+## slides
 
-The latest slides for this workshop can be found on Google Slides [here](). A snaphot is availale in the <`slides/`> directory.
+The latest slides for this workshop can be found on Google Slides [here](https://docs.google.com/presentation/d/1BK4CsGChSKI8BCVsg9Rlv0lY5AfsrbanhIRWnKaP0TI/edit?usp=sharing).
 
 ## manually building
 
