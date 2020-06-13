@@ -30,7 +30,7 @@ run)
     echo "> starting a new container"
     echo
     docker run --cap-add SYS_PTRACE --rm -it --name frida-boot -p9999:80 \
-        -v $(pwd)/code:/root/code frida-boot
+        -v $(pwd)/code:/root/code leonjza/frida-boot
     ;;
 run-dev)
     echo "> runing a content dev instance"
