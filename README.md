@@ -9,6 +9,7 @@
 <h4 align="center">
   A binary instrumentation workshop, using <a href="https://frida.re" target="_blank">Frida</a>, for beginners!
   <p align="center">
+    <a href="https://twitter.com/leonjza"><img src="https://img.shields.io/badge/twitter-%40leonjza-blue.svg" alt="@leonjza" height="18"></a>
     <a href="https://hub.docker.com/r/leonjza/frida-boot"><img alt="Docker Cloud Build Status" src="https://img.shields.io/docker/cloud/build/leonjza/frida-boot"></a>
   </p>
  </h4>
