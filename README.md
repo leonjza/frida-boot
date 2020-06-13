@@ -18,7 +18,7 @@
 
 <img align="right" src="./images/frida-boot-web.png" height="320" alt="frida-boot">
 
-- `git clone github.com/leonjza/frida-boot`
+- `git clone https://github.com/leonjza/frida-boot`
 - `cd frida-boot`
 - `./docker.sh pull`
 - `./docker.sh run`
