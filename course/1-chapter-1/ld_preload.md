@@ -146,7 +146,7 @@ SYNOPSIS
        void *dlsym(void *handle, const char *symbol);
 ```
 
-Seems simple enough but truthfully, it’s a bit more tricky than that and you are better off reading the larger man page to understand the intricacies of how `dlym` works. For the purpose of this exercise though, it’s just important to know that a handle to the real function should be created, and that handle should be resolved with `dlsym`.
+Seems simple enough but truthfully, it’s a bit more tricky than that and you are better off reading the larger man page to understand the intricacies of how `dlsym` works. For the purpose of this exercise though, it’s just important to know that a handle to the real function should be created, and that handle should be resolved with `dlsym`.
 
 One last thing, lets update the sleep to just sleep for `1` second in the library, and not for the amount of time that is actually requests. With all that coming together, our `fake_sleep.c` detour should now look something like:
 
@@ -181,7 +181,7 @@ gcc -fPIC -shared fake_sleep.c -o fake_sleep.so -ldl
 Thats it! Run the program again with the `LD_PRELOAD` environment variable set and watch as the three second sleep becomes only one second, with a nice message.
 
 ```bash
-$ LD_PRELOAD=./fake_sleep.so ./sleep_test
+$ LD_PRELOAD=./fake_sleep.so ./pew
 [+] Starting up!
 [+] Sleeping for 3 seconds
 [-] sleep goes brrr
