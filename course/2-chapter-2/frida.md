@@ -42,7 +42,7 @@ Finally, there are a set of command line tools that make use of the Python bindi
 
 Frida can operate in three primary modes:
 
-- Injected (how were are going to use it most of the time)
+- Injected (how we're going to use it most of the time)
 - Embedded (basically a shared library that you can make part of a project)
 - Preload (a combination of embedded mode with JavaScript already built to autonomously instrument applications)
 
