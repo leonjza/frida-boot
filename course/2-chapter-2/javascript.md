@@ -12,7 +12,7 @@ From the documentation one can quickly see the wide range of features Frida has.
 
 ## repl
 
-The Frida REPL can autocomplete most of the Frida modules as well. This makes prototyping very fast from inside the Frida REPL. For example, with the `frida` tool attached to the already running `sleep_test` program, we can start playing with the API right away.
+The Frida REPL can autocomplete most of the Frida modules as well. This makes prototyping very fast from inside the Frida REPL. For example, with the `frida` tool attached to the already running `pew` program, we can start playing with the API right away.
 
 ?> Try and hit `TAB` as often as you can, there are plenty of places where it works!
 
@@ -22,7 +22,7 @@ The Frida REPL can autocomplete most of the Frida modules as well. This makes pr
 ```
 
 ```text
-[Local::sleep_test]-> Process.getModuleByName("libc-2.30.so");
+[Local::pew]-> Process.getModuleByName("libc-2.30.so");
 {
     "base": "0x7fe5d9644000",
     "name": "libc-2.30.so",
@@ -32,4 +32,4 @@ The Frida REPL can autocomplete most of the Frida modules as well. This makes pr
 [Local::pew]->
 ```
 
-All of this is happening while the target process, `sleep_test` is still running...
+All of this is happening while the target process, `pew` is still running...
