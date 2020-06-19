@@ -32,7 +32,7 @@ The Frida project is pretty large, and there are many moving parts to it.
 
 The first, and most important part is the Frida core, written in C. This component is responsible for injecting a JavaScript engine like V8 or Duktape into the target process and runs the JavaScript that you wrote in the target process.
 
-The the next component would be the Frida language bindings. It is possible to communicate with the Frida core using anyone one of the following languages; C, Python, Node Swift and .NET. For this workshop we will be using the Python bindings, but really you are free to choose whichever you prefer.
+The next component would be the Frida language bindings. It is possible to communicate with the Frida core using anyone one of the following languages; C, Python, Node Swift and .NET. For this workshop we will be using the Python bindings, but really you are free to choose whichever you prefer.
 
 Next, there are language runtime bridges (or gum). These bridges make use of metadata rich runtimes such as Objective-C and Java on mobile devices that allows you to instrument these higher-level languages without the need to know the intricacies of the target runtimes themselves. While Objective-C and Java bridges are part of Frida, community bridges for runtimes like Swift and Mono (.NET) also exist.
 
