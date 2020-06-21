@@ -112,7 +112,7 @@ Symbol "sleep" is at 0xcad60 in a file compiled without debugging.
 
 In `gdb` we have the same address for `sleep`. Neat! Now again, ASLR will make this address change every time a binary is run, so let's see if using `0xcad60` as an offset for the function from libc's base address will get us at the same location.
 
-To do this start `gdb` on the `wpewleep_test` binary again and set a breakpoint on the `main` function with `b *main`. Next, run the binary with `r` and the program should pause after hitting the breakpoint. At this point the shared libraries should all have been loaded. Next, have a look at the processes memory map with `info proc map` (or `vmmap`):
+To do this start `gdb` on the `pew` binary again and set a breakpoint on the `main` function with `b *main`. Next, run the binary with `r` and the program should pause after hitting the breakpoint. At this point the shared libraries should all have been loaded. Next, have a look at the processes memory map with `info proc map` (or `vmmap`):
 
 ```text
 gef➤  info proc map
