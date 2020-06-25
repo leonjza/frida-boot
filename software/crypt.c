@@ -16,14 +16,14 @@ int test_pin(char *p) {
 
 int main(int argc, char **argv) {
 
-    int acces = 0;
+    int access = 0;
     char pin[10];
 
     while (acces == 0) {
         printf("Pin: ");
         fgets(pin, sizeof(pin) - 1, stdin);
         if (test_pin(pin) == 1)
-            acces = 1;
+            access = 1;
     }
 
     printf("Pwnd!!\n");
