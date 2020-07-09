@@ -195,7 +195,7 @@ Try getting libc now.
 Now imagine we wanted to know which exports existed in libc. We can do that with the `Module.enumerateExports()` API where `Module` is the resolved module we already had in the previous step. Typically in a script you would do that as follows:
 
 ```javascript
-var libc = Process.getModuleByName("libv-2.30.so");
+var libc = Process.getModuleByName("libc-2.30.so");
 var exports = libc.enumerateExports();
 
 console.log(exports);   // print results
