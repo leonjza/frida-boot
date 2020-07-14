@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
     int access = 0;
     char pin[10];
 
-    while (acces == 0) {
+    while (access == 0) {
         printf("Pin: ");
         fgets(pin, sizeof(pin) - 1, stdin);
         if (test_pin(pin) == 1)
