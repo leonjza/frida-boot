@@ -1,4 +1,4 @@
-# javascript api
+# JavaScript api
 
 As mentioned a few times now, Frida injects a JavaScript engine which can be either Chrome's V8 engine, or the smaller Duktape engine. Both engines have their pro's and con's and whichever you choose will most probably depend on the resources you have available to you. Resources aside, the only real difference to keep in mind is that Duktape does not support modern ES6 syntax, whereas V8 does. This is not too important for now, but keep it in mind when we get to the later parts of this workshop.
 

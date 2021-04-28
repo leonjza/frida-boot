@@ -235,7 +235,7 @@ Continue stepping until you enter the `puts@plt` function (that is after the `ca
 
 At this point you should see that the _trace_ section now has two entries; `#0 puts@plt()` -> `#1 main()`. This means we are in the `puts@plt` function, called from the `main()` function.
 
-We are not really interested in `puts` right now (even though the same thing as what is going to happen to `printf` is about to happen here), lets continue out of this function. Do so with a sinlge run of the `s` (step) command.
+We are not really interested in `puts` right now (even though the same thing as what is going to happen to `printf` is about to happen here), lets continue out of this function. Do so with a single run of the `s` (step) command.
 
 ![puts](../_media/real-puts.png)
 
@@ -324,7 +324,7 @@ gef➤  b *0x0000555e9e1a31f5
 Breakpoint 2 at 0x555e9e1a31f5
 ```
 
-Thats it! We can now continue running the program with `c`, and watch as we hit the new breakpoint.
+That's it! We can now continue running the program with `c`, and watch as we hit the new breakpoint.
 
 ![printf-args](../_media/printf-args.png)
 
@@ -366,7 +366,7 @@ Given that our program is in the infinite loop at this stage with the call to ju
 
 So far we have seen how the dynamic linker resolved libc functions (sort-of), storing the results in the GOT so that the next time the same function is called it knows where it is. How does that process look when we are using `LD_PRELOAD`?
 
-Not much different to be honest. Let's take a look. We are going to start up a new debuggig session for `pew` and like before, set a breakpoint on `main` too. However, before we run the program (with `r`), we are going to set the `LD_PRELOAD` environment variable within `gdb` first. Do this with `set environment LD_PRELOAD ./fake_sleep.so`. For example:
+Not much different to be honest. Let's take a look. We are going to start up a new debugging session for `pew` and like before, set a breakpoint on `main` too. However, before we run the program (with `r`), we are going to set the `LD_PRELOAD` environment variable within `gdb` first. Do this with `set environment LD_PRELOAD ./fake_sleep.so`. For example:
 
 ```text
 gef➤  b *main

@@ -4,7 +4,7 @@ You may have noticed the line `sys.stdin.read()` we used in the previous example
 
 ## load timeout
 
-The PIN brute forcer we have implemented finished relatively quickly, and is implemented by reusing the target program's logic. When you make a call to `script.load()`, the sript you have provided in the `create_script()` call is sent to the Frida agent in the process and evaluated. Frida gives this the call to `script.load()` about 30 seconds to complete. If it took longer than that, Frida would raise an exception stating that a timeout was reached.
+The PIN brute forcer we have implemented finished relatively quickly, and is implemented by reusing the target program's logic. When you make a call to `script.load()`, the script you have provided in the `create_script()` call is sent to the Frida agent in the process and evaluated. Frida gives this the call to `script.load()` about 30 seconds to complete. If it took longer than that, Frida would raise an exception stating that a timeout was reached.
 
 ![script-load-time](../_media/script-load-time.png)
 

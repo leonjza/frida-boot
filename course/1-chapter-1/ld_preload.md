@@ -178,7 +178,7 @@ We are almost there! The last step would be to recompile our shared library, but
 gcc -fPIC -shared fake_sleep.c -o fake_sleep.so -ldl
 ```
 
-Thats it! Run the program again with the `LD_PRELOAD` environment variable set and watch as the three second sleep becomes only one second, with a nice message.
+That's it! Run the program again with the `LD_PRELOAD` environment variable set and watch as the three second sleep becomes only one second, with a nice message.
 
 ```bash
 $ LD_PRELOAD=./fake_sleep.so ./pew
