@@ -223,7 +223,7 @@ In our case, we are just going to do it in one line by calling `enumerateExports
 ]
 ```
 
-The return fo that should be a pretty large list! Thankfully we could use JavaScript to filter the results down using the `filter()` function on the array that `enumerateExports()` returns.
+The return of that should be a pretty large list! Thankfully we could use JavaScript to filter the results down using the `filter()` function on the array that `enumerateExports()` returns.
 
 ```text
 [Local::pew]-> Process.getModuleByName("libc-2.30.so").enumerateExports().filter(function(n) { return n.name == "sleep"; } );
@@ -298,13 +298,13 @@ With that saved to the `index.js` file, loaded with the Frida command line tool,
 [*] Done sleeping from Frida!
 ```
 
-Woa, you just instrumented your first application using Frida! Pretty easy huh?
+Whoa, you just instrumented your first application using Frida! Pretty easy huh?
 
 ## attach under the hood
 
 Let's try and see how that was different from the `LD_PRELOAD` method. Attach `gdb` to the running instance of `pew` with `gdb -q -p $(pidof pew)`.
 
-If we were to check what the `sleep()` function looked like before and after Frida was attached, we would see the following differences to the prolouge of the function.
+If we were to check what the `sleep()` function looked like before and after Frida was attached, we would see the following differences to the prologue of the function.
 
 Before Frida:
 

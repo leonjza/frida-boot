@@ -117,7 +117,7 @@ Notice how `pew` only waits one second now :)
 
 ## data binding in onenter and onleave
 
-Depending on what your hook does, you may want to affect the return value of a function based on arguments you received. However, both the `onEnter` and `onLeave` call backs have different arguments and by extention has access to different parts of a hooked function.
+Depending on what your hook does, you may want to affect the return value of a function based on arguments you received. However, both the `onEnter` and `onLeave` call backs have different arguments and by extension has access to different parts of a hooked function.
 
 Using the `this` context within the call backs it’s possible to bind data in the `onEnter` call back and make it available in the `onLeave` callback. For example, if we wanted to make the return value of `rand_range` to be the same as the first argument the function gets:
 

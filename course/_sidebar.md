@@ -11,7 +11,7 @@
   - [LD_PRELOAD](1-chapter-1/ld_preload)
   - [Hook Internals](1-chapter-1/internals)
 
-* Chaptwer Two
+* Chapter Two
   - [Frida](2-chapter-2/frida)
   - [JavaScript API](2-chapter-2/javascript)
   - [Sleep Hook v2](2-chapter-2/sleep)

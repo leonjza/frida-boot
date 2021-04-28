@@ -6,7 +6,7 @@ Let's take a quick look at the other operating modes; frida-server and frida-gad
 
 ## frida-server
 
-The `frida-server` binary that you can download from the Github [releases](https://github.com/frida/frida/releases) page is a standalone program. When run, it will create a TCP socket listening on localhost on port 27042 where client tools can connect to. You can change this with the `-l` flag to make it listen on a different interface and port combination. For example `./frida-server -l 0.0.0.0:1337`.
+The `frida-server` binary that you can download from the GitHub [releases](https://github.com/frida/frida/releases) page is a standalone program. When run, it will create a TCP socket listening on localhost on port 27042 where client tools can connect to. You can change this with the `-l` flag to make it listen on a different interface and port combination. For example `./frida-server -l 0.0.0.0:1337`.
 
 The docker container you have using for this workshop has the `frida-server` command available for you to experiment with.
 
@@ -26,7 +26,7 @@ Application Options:
   -v, --verbose                 Be verbose
 ```
 
-If you want to see it in action, rerun the docker container adding a new port mapping with `-p 27042:27042`. Once the contianer is up, start the server with `frida-server -l 0.0.0.0`. Next, with `frida-tools` installed locally via `pip` (`pip install frida-tools`), try and connect to the server running in the container with `frida-ps -R`.
+If you want to see it in action, rerun the docker container adding a new port mapping with `-p 27042:27042`. Once the container is up, start the server with `frida-server -l 0.0.0.0`. Next, with `frida-tools` installed locally via `pip` (`pip install frida-tools`), try and connect to the server running in the container with `frida-ps -R`.
 
 ```bash
 # inside the container
@@ -86,7 +86,7 @@ Let your imagination go wild! Naturally, the language binding support the same r
 
 ## frida-gadget
 
-The other form Frida comes in is called the Gadget. Fundamentally it behaves just like the Frida server does with the key difference being that is is a shared library with a constructore that boots it up. When the library is initialised, it also opens a TCP port on local host (more on the coniguration later) whereafter one can connect the Frida command line tools.
+The other form Frida comes in is called the Gadget. Fundamentally it behaves just like the Frida server does with the key difference being that is is a shared library with a constructor that boots it up. When the library is initialised, it also opens a TCP port on local host (more on the configuration later) where one can connect the Frida command line tools.
 
 The Gadget is particularly powerful in the sense that it could be patched into say a mobile application to be loaded early during the applications' startup, allowing for the Frida command line tools to be connected to it and the process it is attached to, instrumented.
 
@@ -104,11 +104,11 @@ The `frida-gadget.so` is located in the `/root` directory in the Docker containe
 
 ```
 
-Notice how we don't see the `Pin:` prompt we have come to expect from the `crypt` program, but instead we are shown a new line that Frida is now listening on localhost port 27042. At this stage the program is atually _paused_, waiting for a Frida client to tell it to resume.
+Notice how we don't see the `Pin:` prompt we have come to expect from the `crypt` program, but instead we are shown a new line that Frida is now listening on localhost port 27042. At this stage the program is actually _paused_, waiting for a Frida client to tell it to resume.
 
 This pausing behaviour is the default when it comes to the Gadget, but can be changed (more on that later.).
 
-Alright, lets open another shell in the Docker container and get to a point where we can resume the app. Remember that we are now working on a remote gadget (as in over a TCP socket), so for the Frida command line tools we will be providing the `-R` flag. Try and connect the Frida REPL to the `crypt` programm that is already running now.
+Alright, lets open another shell in the Docker container and get to a point where we can resume the app. Remember that we are now working on a remote gadget (as in over a TCP socket), so for the Frida command line tools we will be providing the `-R` flag. Try and connect the Frida REPL to the `crypt` program that is already running now.
 
 ```text
 ~$ frida -R crypt
@@ -237,7 +237,7 @@ If we wanted to change the behaviour of the Gadget to not pause the program unti
 }
 ```
 
-The configuration file itself needs to live next to the Gadget's `.so` file and have the same name with the extention being `.config` instead of `.so`. Save a file with this contents called `frida-gadget.config` and run the patched `crypt` binary again.
+The configuration file itself needs to live next to the Gadget's `.so` file and have the same name with the extension being `.config` instead of `.so`. Save a file with this contents called `frida-gadget.config` and run the patched `crypt` binary again.
 
 ```text
 ~/code$ ./crypt

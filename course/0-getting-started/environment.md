@@ -4,7 +4,7 @@ This workshop will be run from within a single docker container that you either 
 
 The following core tooling should be available:
 
-- GNU Debugger [`gdb`](https://www.gnu.org/software/gdb/) with the awesome GDB Enhanced Features [`gef`](http://gef.rtfd.io/) assitance tooling.
+- GNU Debugger [`gdb`](https://www.gnu.org/software/gdb/) with the awesome GDB Enhanced Features [`gef`](http://gef.rtfd.io/) assistance tooling.
 - The [Frida](https://frida.re/) python command line utilities, [`frida-tools`](https://github.com/frida/frida-tools) which also includes [`frida`](https://github.com/frida/frida) itself.
 
 Other programs / helpers include:
