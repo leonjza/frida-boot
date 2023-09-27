@@ -38,9 +38,10 @@ ENV LC_ALL en_US.UTF-8
 RUN pip3 install frida-tools
 
 # GEF Setup aka: Pretty debugging.
-RUN curl -fsSL https://github.com/hugsy/gef/raw/master/gef.py -o ~/.gdbinit-gef.py && \
-    echo source ~/.gdbinit-gef.py >> ~/.gdbinit
-
+# RUN curl -fsSL https://github.com/hugsy/gef/raw/master/gef.py -o ~/.gdbinit-gef.py && \
+#    echo source ~/.gdbinit-gef.py >> ~/.gdbinit
+# new fix
+bash -c "$(curl -fsSL https://gef.blah.cat/sh)"
 # Frida Server
 RUN curl -fsSL https://github.com/frida/frida/releases/download/${FRIDA_VERSION}/frida-server-${FRIDA_VERSION}-linux-x86_64.xz -o /tmp/frida-server.xz && \
     unxz /tmp/frida-server.xz && \
